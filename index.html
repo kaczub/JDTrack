@@ -1,0 +1,1782 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Just Dance — stanowisko</title>
+<style>:root{
+  --bg:#f6f6f3;
+  --paper:#ffffff;
+  --ink:#0a0a0a;
+  --muted:#5f5f5f;
+  --line:#d8d8d2;
+  --soft:#efefea;
+  --on-ink:#ffffff;
+  --ink-hover:#2a2a2a;
+  --top-bg:rgba(246,246,243,.94);
+  --placeholder:#8f8f87;
+  --radius:4px;
+  --now-bg:#0a0a0a;
+  --now-fg:#ffffff;
+  --now-muted:#a8a8a8;
+  --now-line:#333333;
+  --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:ui-serif,Georgia,"Times New Roman",serif;
+}
+html[data-theme="dark"]{
+  --bg:#0a0a0a;
+  --paper:#111111;
+  --ink:#f5f5f5;
+  --muted:#a8a8a8;
+  --line:#2a2a2a;
+  --soft:#181818;
+  --on-ink:#0a0a0a;
+  --ink-hover:#e2e2e2;
+  --top-bg:rgba(10,10,10,.94);
+  --placeholder:#6f6f6f;
+  --now-bg:#141414;
+  --now-fg:#ffffff;
+  --now-muted:#9a9a9a;
+  --now-line:#3a3a3a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15.5px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  -webkit-tap-highlight-color:transparent;
+}
+button,a,input{-webkit-tap-highlight-color:transparent}
+h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.02em}
+h1{font-size:clamp(25px,3vw,35px);font-weight:700}
+h2{font-size:23px;font-weight:700}
+h3{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+button{font:inherit;color:inherit}
+input,select{font:inherit}
+::selection{background:var(--ink);color:var(--on-ink)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* header */
+.top{
+  position:sticky;top:0;z-index:30;
+  display:flex;flex-wrap:wrap;align-items:center;gap:12px 30px;
+  padding:15px 28px;
+  background:var(--top-bg);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--ink);
+}
+.brand{display:flex;flex-direction:column;gap:3px;min-width:165px}
+.logo{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1.2;padding-top:1px;color:var(--ink)}
+.brand .sub{font-size:9.5px;color:var(--muted);letter-spacing:.17em;text-transform:uppercase}
+.tabs{display:flex;gap:22px;flex:1;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  border:0;background:transparent;padding:6px 0 8px;cursor:pointer;white-space:nowrap;
+  color:var(--muted);font-weight:650;font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+  border-bottom:2px solid transparent;
+}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);border-bottom-color:var(--ink)}
+.tab .badge{
+  display:inline-block;min-width:17px;padding:0 4px;margin-left:5px;border-radius:3px;
+  background:var(--ink);color:var(--on-ink);font-size:9.5px;line-height:17px;text-align:center;letter-spacing:0;
+}
+.today{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.today .hint{font-size:10px;letter-spacing:.1em}
+.theme-toggle{flex:0 0 auto}
+
+/* layout */
+main{max-width:1120px;margin:0 auto;padding:28px 24px 90px}
+.view{display:none}
+.view.active{display:block}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.hint{color:var(--muted);font-size:13px}
+.small{font-size:13px}
+
+/* buttons */
+.btn{
+  border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  padding:10px 15px;border-radius:var(--radius);cursor:pointer;font-weight:650;font-size:13.5px;
+  display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+  transition:background .12s,color .12s;
+}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--ink);color:var(--on-ink)}
+.btn.primary:hover{background:var(--ink-hover)}
+.btn.ghost{border-color:var(--line);background:transparent}
+.btn.ghost:hover{border-color:var(--ink);background:transparent}
+.btn.danger{border-color:var(--ink);background:transparent;color:var(--ink)}
+.btn.danger:hover{background:var(--ink);color:var(--on-ink)}
+.btn.tiny{padding:7px 10px;font-size:12px;border-radius:3px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.icon{
+  border:1px solid transparent;background:transparent;border-radius:3px;
+  width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted);font-size:14px;transition:.12s;
+}
+.icon:hover{background:var(--soft);color:var(--ink);border-color:var(--line)}
+.icon.on{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.icon.danger:hover{background:var(--ink);color:var(--on-ink)}
+
+/* toolbar + filters */
+.toolbar{display:flex;flex-direction:column;gap:14px}
+.print-toolbar{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px}
+.toolbar-main{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.toolbar-sub{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;border-top:1px solid var(--line);padding-top:13px}
+.search{
+  flex:1 1 260px;min-width:190px;background:var(--paper);border:1px solid var(--line);
+  color:var(--ink);padding:12px 14px;border-radius:var(--radius);font-size:14.5px;
+}
+.search::placeholder{color:var(--placeholder)}
+.search:focus{outline:none;border-color:var(--ink)}
+.switch{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:12.5px;cursor:pointer;user-select:none}
+.switch input{accent-color:var(--ink);width:15px;height:15px}
+.filter-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.player-chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:thin}
+.chip{
+  border:1px solid var(--line);background:transparent;color:var(--muted);
+  padding:7px 11px;border-radius:3px;cursor:pointer;white-space:nowrap;font-size:12px;font-weight:600;
+}
+.chip b{color:var(--ink);font-weight:700;margin-left:3px}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.chip.active{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.chip.active b{color:var(--on-ink)}
+.chip.active:hover{color:var(--on-ink)}
+.family-switch{font-size:12.5px}
+.filter-note{font-size:11.5px;color:var(--muted);margin-left:auto}
+.count{margin:0 0 12px}
+
+/* song list */
+.song-list{border-top:1px solid var(--line)}
+.song{
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:16px;align-items:center;
+  padding:12px 4px;border-bottom:1px solid var(--line);
+}
+.song:hover{background:var(--soft)}
+.song-main{min-width:0}
+.song-title{font-weight:650;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.song-sub{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.song-badge{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.song-actions{display:flex;gap:1px;align-items:center}
+.gbadge{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:2px 6px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:.05em;
+  color:var(--muted);border:1px solid var(--line);background:transparent;white-space:nowrap;
+}
+.pbadge{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:2px;padding:2px 6px;white-space:nowrap}
+.pbadge.unknown{font-style:italic}
+.tag{
+  font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;
+  border-radius:2px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;
+}
+.tag.warn{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.tag.bad{border:1px dashed var(--ink);color:var(--ink)}
+.tag.flag{border-color:var(--ink);color:var(--ink)}
+.member-list{display:inline-flex;flex-wrap:wrap;gap:4px}
+.member{font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:1px 6px;white-space:nowrap}
+.now .member{color:#d8d8d8;border-color:#444}
+.now-members{margin-top:8px}
+
+/* queue */
+.queue-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.now{border:1px solid var(--ink);border-radius:6px;background:var(--now-bg);color:var(--now-fg);padding:26px}
+.now.over{border-style:dashed;border-width:2px;border-color:var(--now-fg)}
+.now-label{font-size:10px;font-weight:700;letter-spacing:.2em;color:var(--now-muted);text-transform:uppercase;margin-bottom:8px}
+.now-main{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.now-team{font-family:var(--serif);font-size:clamp(32px,4.8vw,48px);font-weight:700;line-height:1.02;letter-spacing:-.02em;color:var(--now-fg)}
+.now-song{font-size:17px;font-weight:600;margin-top:6px;color:var(--now-fg)}
+.now .song-sub{color:var(--now-muted)}
+.now .gbadge,.now .pbadge{color:#d8d8d8;border-color:#444}
+.now .tag{color:#d8d8d8;border-color:#444}
+.now .tag.warn,.now .tag.flag{background:var(--now-fg);color:var(--now-bg);border-color:var(--now-fg)}
+.now .btn.primary{background:var(--now-fg);color:var(--now-bg);border-color:var(--now-fg)}
+.now .btn.ghost{background:transparent;color:var(--now-fg);border-color:#555}
+.now .btn.ghost:hover{border-color:var(--now-fg)}
+.timer{min-width:160px;text-align:right}
+.timer-text{font-variant-numeric:tabular-nums;font-size:32px;font-weight:700;letter-spacing:.01em;color:var(--now-fg)}
+.timer-bar{height:3px;background:var(--now-line);border-radius:2px;overflow:hidden;margin:8px 0 6px}
+.timer-bar i{display:block;height:100%;width:0;background:var(--now-fg);transition:width .5s linear}
+.timer-hint{font-size:10px;color:var(--now-muted);letter-spacing:.06em;text-transform:uppercase}
+.q-title{margin:24px 0 8px;display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.13em}
+.q-list{border-top:1px solid var(--line)}
+.q-item{
+  display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:12px;align-items:center;
+  padding:12px 4px;border-bottom:1px solid var(--line);
+}
+.q-item.next{border-left:2px solid var(--ink);padding-left:10px}
+.q-pos{font-weight:700;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;font-size:12px}
+.q-team{font-weight:700;font-size:15px}
+.q-song{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;font-size:11.5px;color:var(--muted)}
+.q-actions{display:flex;gap:1px;align-items:center}
+.empty{
+  text-align:center;padding:40px 18px;border:1px dashed var(--line);border-radius:6px;
+  color:var(--muted);background:transparent;
+}
+.empty strong{display:block;color:var(--ink);font-size:18px;font-weight:700;margin-bottom:4px}
+
+/* records */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin-bottom:16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stat{padding:12px 14px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-size:24px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:9.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.rec{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.rec:last-child{border-bottom:0}
+.rec-title{font-weight:650;font-size:14.5px}
+.rec-sub{font-size:12px;color:var(--muted)}
+.rec-score{text-align:right;font-variant-numeric:tabular-nums}
+.rec-score b{font-size:20px;font-weight:700}
+.rec-score span{display:block;font-size:10.5px;color:var(--muted)}
+.top-list{counter-reset:rank}
+.top-item{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.top-item:last-child{border-bottom:0}
+.top-item::before{counter-increment:rank;content:counter(rank);font-weight:700;color:var(--muted);text-align:center;font-size:12px}
+.top-score{font-weight:700;font-variant-numeric:tabular-nums;font-size:17px}
+
+/* board (always dark) */
+.board{min-height:70vh;padding:24px 0}
+.board-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.board-clock{font-variant-numeric:tabular-nums;font-size:18px;color:var(--muted);font-weight:600;letter-spacing:.05em}
+.board-now{border:1px solid #2c2c2c;border-radius:8px;padding:clamp(22px,4vw,44px);background:#0f0f0f}
+.board-kicker{font-size:clamp(9px,1.1vw,12px);font-weight:700;letter-spacing:.24em;color:#8a8a8a;text-transform:uppercase}
+.board-team{font-family:var(--serif);font-size:clamp(38px,7vw,82px);font-weight:700;line-height:.98;margin:10px 0 8px;letter-spacing:-.03em;color:#fff}
+.board-song{font-size:clamp(20px,3.2vw,38px);font-weight:600;color:#fff}
+.board-meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px;color:#9a9a9a;font-size:clamp(12px,1.6vw,17px)}
+.board-timer{font-variant-numeric:tabular-nums;font-weight:700;color:#fff}
+.board-next{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:16px}
+.board-record{margin-top:16px}
+.board-record .big{font-size:clamp(24px,4vw,42px);font-weight:700;font-variant-numeric:tabular-nums;color:#fff}
+.board-free{text-align:center;padding:clamp(50px,12vw,130px) 20px;border:1px dashed #3a3a3a;border-radius:8px}
+.board-free .big{font-family:var(--serif);font-size:clamp(30px,6vw,64px);font-weight:700;color:#fff;letter-spacing:-.03em}
+.board-free .sub{color:#8a8a8a;font-size:clamp(14px,1.8vw,20px);margin-top:8px}
+.board .panel{background:#0f0f0f;border-color:#2c2c2c;color:#f5f5f5}
+.board .panel .hint{color:#8a8a8a}
+.board .gbadge,.board .pbadge{color:#d8d8d8;border-color:#444}
+.board .n-team{font-weight:700;font-size:clamp(17px,2.4vw,24px);color:#fff}
+.board .n-song{color:#9a9a9a;font-size:clamp(12px,1.6vw,15px);margin-top:2px}
+.board .btn.ghost{color:#fff;border-color:#444}
+.board .btn.ghost:hover{border-color:#fff}
+body[data-tab="board"]{background:#0a0a0a}
+body[data-tab="board"] main{max-width:none;padding:0 28px 28px;background:transparent}
+body[data-tab="board"] .top{background:#0a0a0a;border-bottom-color:#262626;backdrop-filter:none}
+body[data-tab="board"] .logo{color:#fff}
+body[data-tab="board"] .brand .sub,body[data-tab="board"] .today,body[data-tab="board"] .today .hint{color:#8a8a8a}
+body[data-tab="board"] .tab{color:#8a8a8a}
+body[data-tab="board"] .tab:hover{color:#fff}
+body[data-tab="board"] .tab.active{color:#fff;border-bottom-color:#fff}
+body[data-tab="board"] .tab .badge{background:#fff;color:#0a0a0a}
+body[data-tab="board"] .top .gbadge{color:#d8d8d8;border-color:#444}
+body[data-tab="board"] .top .icon{color:#8a8a8a}
+body[data-tab="board"] .top .icon:hover{color:#fff;border-color:#444;background:#141414}
+body[data-tab="board"] .board-clock{color:#8a8a8a}
+
+/* settings */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.field > .btn{align-self:flex-start}
+.field > span{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.input{background:var(--paper);border:1px solid var(--line);color:var(--ink);padding:11px 13px;border-radius:var(--radius);width:100%;font-size:14.5px}
+.input:focus{outline:none;border-color:var(--ink)}
+.game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.game-card{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 13px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);cursor:pointer;text-align:left}
+.game-card.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.game-card.on .gbadge{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.game-card .n{font-weight:650;font-size:13px}
+.game-card .c{font-size:11px;color:var(--muted)}
+.hidden-list{max-height:260px;overflow:auto;margin-top:8px;border-top:1px solid var(--line)}
+.hidden-row{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);
+  background:var(--ink);color:var(--on-ink);padding:12px 18px;border-radius:4px;
+  opacity:0;pointer-events:none;transition:.18s;z-index:100;max-width:90vw;text-align:center;font-size:13px;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.warn,.toast.bad{background:var(--paper);color:var(--ink);border:1px solid var(--ink)}
+
+/* dialogs */
+dialog.dlg{
+  border:1px solid var(--ink);border-radius:8px;background:var(--paper);color:var(--ink);
+  padding:0;width:min(560px,94vw);max-height:92vh;overflow:auto;box-shadow:0 24px 80px rgba(0,0,0,.18);
+}
+dialog.dlg::backdrop{background:rgba(10,10,10,.5)}
+.dlg-inner{padding:24px}
+.dlg h2{margin-bottom:14px}
+.dlg-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
+.members-editor{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 0 8px}
+.member-row{display:flex;gap:4px;align-items:center}
+.member-row .input{padding:7px 9px;font-size:12.5px}
+.member-row .icon{width:28px;height:28px;flex:0 0 auto}
+.selected-list{display:flex;flex-direction:column;gap:5px;margin:8px 0 10px;max-height:180px;overflow:auto}
+.selected-item{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:4px;padding:9px 11px;background:var(--soft)}
+.selected-item .t{font-weight:600;font-size:13.5px}
+.selected-item .a{font-size:11.5px;color:var(--muted)}
+.selected-empty{border:1px dashed var(--line);border-radius:4px;padding:12px;color:var(--muted);font-size:12.5px}
+.results{display:flex;flex-direction:column;max-height:250px;overflow:auto;margin-top:8px;border-top:1px solid var(--line)}
+.result{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);background:transparent;cursor:pointer;text-align:left;width:100%}
+.result:hover{background:var(--soft)}
+.result.selected{background:var(--soft)}
+.result .check{font-weight:700;color:var(--ink);margin-left:2px}
+.result .rt{font-weight:600;font-size:13.5px}
+.result .ra{font-size:11.5px;color:var(--muted)}
+.result .r-meta{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.stars{display:flex;gap:5px;margin:6px 0 4px}
+.star{width:40px;height:40px;border-radius:4px;border:1px solid var(--line);background:var(--paper);color:var(--muted);font-weight:700;cursor:pointer}
+.star.on{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+
+/* print */
+.sheet{display:none;background:#fff;color:#000;max-width:860px;margin:0 auto;padding:36px 40px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+body[data-tab="print"] .sheet{display:block}
+.sheet h1{font-family:var(--serif);font-size:30px;font-weight:700;color:#000}
+.sheet h2{font-size:15px;margin:24px 0 10px;border-bottom:1px solid #000;padding-bottom:5px;text-transform:uppercase;letter-spacing:.07em;color:#000}
+.sheet h3{font-size:10.5px;margin:16px 0 6px;color:#000;text-transform:uppercase;letter-spacing:.11em;border-bottom:1px solid #e4e4e4;padding-bottom:3px}
+.sheet h3 .n{font-weight:400;text-transform:none;letter-spacing:0}
+.sheet .meta{color:#555;font-size:10.5px;margin-top:4px}
+.sheet .note{color:#555;font-size:10px;margin-top:18px;border-top:1px solid #e4e4e4;padding-top:8px}
+.print-cols{column-count:2;column-gap:36px}
+.print-song{break-inside:avoid;font-size:12px;padding:2.5px 0;line-height:1.35}
+.ps-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.ps-title{min-width:0;overflow-wrap:anywhere}
+.ps-title b{font-weight:600}
+.ps-artist{color:#666}
+.ps-tag{color:#666;font-size:10px;white-space:nowrap;flex:0 0 auto}
+.ps-flag{color:#000;font-weight:700}
+.print-table{width:100%;border-collapse:collapse;font-size:12px}
+.print-table th,.print-table td{border-bottom:1px solid #ddd;padding:5px 6px;text-align:left;vertical-align:top}
+.print-table th{font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:#555}
+.page-break{break-before:page;page-break-before:always}
+
+@media (max-width:800px){
+  .print-cols{column-count:1}
+  .sheet{padding:24px}
+}
+@media (max-width:700px){
+  .top{padding:12px 16px;gap:10px 18px}
+  main{padding:18px 14px 70px}
+  .tabs{gap:15px}
+  .today{display:none}
+  .song{grid-template-columns:minmax(0,1fr) auto;gap:6px 10px}
+  .song-actions{grid-column:1/-1;justify-content:flex-end}
+  .q-item{grid-template-columns:24px minmax(0,1fr);gap:8px}
+  .q-actions{grid-column:1/-1;justify-content:flex-end}
+  .now-main{gap:12px}
+  .timer{text-align:left;min-width:0}
+  .timer-text{font-size:26px}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:0}
+  .filter-note{margin-left:0;width:100%}
+  .members-editor{grid-template-columns:1fr}
+  body[data-tab="board"] main{padding:0 16px 16px}
+}
+
+@media print{
+  @page{size:A4;margin:12mm}
+  html,body{background:#fff!important;color:#000!important}
+  .top,.no-print{display:none!important}
+  main{max-width:none!important;padding:0!important;margin:0!important}
+  .view{display:none!important}
+  #view-print{display:block!important}
+  #printSheet{
+    display:block!important;background:#fff!important;color:#000!important;
+    box-shadow:none!important;border-radius:0!important;padding:0!important;
+    max-width:none!important;margin:0!important;
+  }
+  .sheet h1,.sheet h2,.sheet h3,.sheet p,.sheet div,.sheet td,.sheet th{color:#000!important}
+  .print-cols{column-count:2}
+  a{color:#000!important;text-decoration:none!important}
+}
+</style>
+</head>
+<body data-tab="menu">
+
+<header class="top">
+  <div class="brand">
+    <div class="logo">Just Dance</div>
+    <div class="sub" id="eventLabel">Andrzejki · stanowisko</div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+  <div class="today" id="todayLabel"></div>
+  <button class="icon theme-toggle" data-action="theme-toggle" title="Jasny / ciemny motyw" aria-label="Zmień motyw">◐</button>
+</header>
+
+<main>
+  <!-- MENU -->
+  <section id="view-menu" class="view active">
+    <div class="panel toolbar">
+      <div class="toolbar-main">
+        <input id="menuSearch" class="search" type="search" placeholder="Szukaj piosenki lub artysty…" autocomplete="off">
+        <label class="switch"><input type="checkbox" id="todayOnly"> tylko gry na dziś</label>
+        <button class="btn primary" data-action="add-open">＋ Dodaj występ</button>
+      </div>
+      <div class="toolbar-sub">
+        <span class="filter-label">Gracze</span>
+        <div id="playerChips" class="player-chips"></div>
+        <label class="switch family-switch"><input type="checkbox" id="familyOnly"> pomijaj wrażliwe</label>
+        <span id="filterNote" class="filter-note"></span>
+      </div>
+    </div>
+    <div id="gameChips" class="chips"></div>
+    <div id="menuCount" class="hint count"></div>
+    <div id="songList" class="song-list"></div>
+  </section>
+
+  <!-- QUEUE -->
+  <section id="view-queue" class="view">
+    <div class="panel queue-top">
+      <div>
+        <h2>Kolejka</h2>
+        <p class="hint" id="queueHint"></p>
+      </div>
+      <button class="btn primary" data-action="add-open">＋ Dodaj występ</button>
+    </div>
+    <div id="queueBody"></div>
+  </section>
+
+  <!-- RECORDS -->
+  <section id="view-records" class="view">
+    <div class="panel queue-top">
+      <div>
+        <h2>Rekordy</h2>
+        <p class="hint" id="recordsHint"></p>
+      </div>
+      <div class="row">
+        <button class="btn ghost" data-action="export-csv">Eksport CSV</button>
+        <button class="btn ghost" data-action="undo-last">Cofnij ostatni</button>
+      </div>
+    </div>
+    <div id="recordsBody"></div>
+  </section>
+
+  <!-- BOARD -->
+  <section id="view-board" class="view board">
+    <div class="board-top">
+      <div class="board-clock" id="boardClock"></div>
+      <button class="btn ghost" data-action="fullscreen">Pełny ekran</button>
+    </div>
+    <div id="boardBody"></div>
+  </section>
+
+  <!-- PRINT -->
+  <section id="view-print" class="view">
+    <div class="panel print-toolbar no-print">
+      <button class="chip mode-btn" data-action="print-mode" data-mode="menu-version">Menu: wersje</button>
+      <button class="chip mode-btn" data-action="print-mode" data-mode="menu-people">Menu: osoby</button>
+      <button class="chip mode-btn" data-action="print-mode" data-mode="queue">Kolejka</button>
+      <button class="chip mode-btn" data-action="print-mode" data-mode="records">Rekordy</button>
+      <button class="chip mode-btn" data-action="print-mode" data-mode="all">Wszystko</button>
+      <button class="btn primary" data-action="do-print">Drukuj</button>
+      <span class="hint" style="margin-left:auto">Podgląd odświeża się z filtrami.</span>
+    </div>
+    <div class="panel print-toolbar no-print">
+      <span class="filter-label">Gracze</span>
+      <div id="printPlayerChips" class="player-chips"></div>
+      <label class="switch family-switch"><input type="checkbox" id="printFamilyOnly"> pomijaj wrażliwe</label>
+      <span class="hint" style="margin-left:auto">Filtry wspólne z Menu.</span>
+    </div>
+    <div id="printSheet" class="sheet"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="view-settings" class="view">
+    <div class="panel">
+      <h2>Ustawienia</h2>
+      <div class="row" style="margin-top:12px;align-items:flex-end">
+        <div class="field" style="flex:1 1 260px;margin:0">
+          <span>Nazwa imprezy</span>
+          <input id="setEvent" class="input" maxlength="60" placeholder="Andrzejki">
+        </div>
+        <div class="field" style="width:150px;margin:0">
+          <span>Slot (min)</span>
+          <input id="setSlot" class="input" type="number" min="1" max="15" step="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Motyw</h3>
+      <div class="row" style="margin-top:10px">
+        <button class="chip theme-chip" data-action="theme" data-theme="light">Jasny</button>
+        <button class="chip theme-chip" data-action="theme" data-theme="dark">Ciemny</button>
+        <span class="hint">Ciemny motyw jest monochromatyczny — bez kolorów.</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Gry na dziś</h3>
+      <p class="hint" style="margin:6px 0 12px">Zaznacz wersje, które będą odpalone na konsoli. Reszta zostaje w katalogu, ale kolejka ostrzeże, że wybór oznacza zmianę gry.</p>
+      <div id="settingsGames" class="game-grid"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Wrażliwe choreografie</h3>
+      <p class="hint" id="adultCount" style="margin:6px 0 10px"></p>
+      <div id="adultList" class="hidden-list"></div>
+      <p class="hint" style="margin-top:10px">Oznaczasz i odznaczasz w Menu przyciskiem ⚑. Filtr „pomijaj wrażliwe” ukrywa te utwory. To subiektywna lista pomocnicza — nie oficjalna klasyfikacja.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Ukryte piosenki</h3>
+      <p class="hint" id="hiddenCount" style="margin:6px 0 10px"></p>
+      <button class="btn ghost" data-action="restore-hidden">Przywróć wszystkie</button>
+      <div id="hiddenList" class="hidden-list"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Dane</h3>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost" data-action="export-json">Kopia JSON</button>
+        <button class="btn ghost" data-action="import-json">Wczytaj JSON</button>
+        <button class="btn ghost" data-action="reset-queue">Wyczyść kolejkę</button>
+        <button class="btn danger" data-action="reset-all">Wyczyść wszystko</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+
+    <div class="panel small">
+      <p class="hint">Katalog obejmuje 494 piosenki z 11 głównych części Just Dance na Wii (bez spin-offów). Listy pochodzą z Wikipedii — kilka utworów regionalnych lub DLC może nie być w Twoim ISO, można je ukryć. Liczba graczy pochodzi z Just Dance Wiki (1 utwór bez danych). Filtr „pomijaj wrażliwe” to subiektywna lista pomocnicza — możesz ją zmieniać. Punktacja różnych piosenek nie jest w 100% porównywalna, dlatego rekordy liczone są osobno dla każdej piosenki, a „Top 10” traktuj jako zabawę.</p>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<dialog id="addDialog" class="dlg">
+  <form id="addForm" class="dlg-inner">
+    <h2>Dodaj występ</h2>
+    <div class="field">
+      <span>Drużyna</span>
+      <input id="addTeam" class="input" maxlength="40" required placeholder="np. Ekipa z 3B">
+    </div>
+    <div class="field">
+      <span>Skład (opcjonalnie)</span>
+      <div id="addMembers" class="members-editor"></div>
+      <button type="button" class="btn tiny ghost" data-action="add-member">＋ Dodaj osobę</button>
+    </div>
+    <div class="field">
+      <span>Piosenki</span>
+      <div id="addSelected" class="selected-list"></div>
+      <input id="addSearch" class="input" placeholder="Szukaj tytułu lub artysty…" autocomplete="off">
+      <div id="addResults" class="results"></div>
+      <p class="hint" id="addWarn" style="margin-top:8px"></p>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="btn ghost" data-action="add-cancel">Anuluj</button>
+      <button type="submit" class="btn primary" id="addSubmit">Dodaj do kolejki</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="scoreDialog" class="dlg">
+  <form id="scoreForm" class="dlg-inner">
+    <h2>Wynik występu</h2>
+    <div id="scoreSummary" style="margin-bottom:12px"></div>
+    <div class="field">
+      <span>Punkty z gry</span>
+      <input id="scoreInput" class="input" type="number" min="0" max="30000" step="1" inputmode="numeric" placeholder="np. 11250">
+    </div>
+    <div class="field">
+      <span>Gwiazdki (opcjonalnie)</span>
+      <div class="stars" id="starButtons">
+        <button type="button" class="star" data-action="star" data-stars="1">1</button>
+        <button type="button" class="star" data-action="star" data-stars="2">2</button>
+        <button type="button" class="star" data-action="star" data-stars="3">3</button>
+        <button type="button" class="star" data-action="star" data-stars="4">4</button>
+        <button type="button" class="star" data-action="star" data-stars="5">5</button>
+      </div>
+      <p class="hint">Puste punkty = występ bez wyniku (nie wejdzie do rekordów).</p>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="btn ghost" data-action="score-cancel">Anuluj</button>
+      <button type="button" class="btn ghost" data-action="score-skip">Bez wyniku</button>
+      <button type="submit" class="btn primary">Zapisz wynik</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="application/json" id="gamesData">[{"id":"JD1","short":"JD 1","full":"Just Dance","year":2009,"color":"#ff6b9d"},{"id":"JD2","short":"JD 2","full":"Just Dance 2","year":2010,"color":"#ffa94d"},{"id":"JD3","short":"JD 3","full":"Just Dance 3","year":2011,"color":"#ffd43b"},{"id":"JD4","short":"JD 4","full":"Just Dance 4","year":2012,"color":"#a9e34b"},{"id":"JD2014","short":"JD 2014","full":"Just Dance 2014","year":2013,"color":"#51cf66"},{"id":"JD2015","short":"JD 2015","full":"Just Dance 2015","year":2014,"color":"#38d9a9"},{"id":"JD2016","short":"JD 2016","full":"Just Dance 2016","year":2015,"color":"#22b8cf"},{"id":"JD2017","short":"JD 2017","full":"Just Dance 2017","year":2016,"color":"#4dabf7"},{"id":"JD2018","short":"JD 2018","full":"Just Dance 2018","year":2017,"color":"#9775fa"},{"id":"JD2019","short":"JD 2019","full":"Just Dance 2019","year":2018,"color":"#f06595"},{"id":"JD2020","short":"JD 2020","full":"Just Dance 2020","year":2019,"color":"#ff922b"}]</script>
+<script type="application/json" id="songsData">[{"game":"JD1","title":"A Little Less Conversation","artist":"Elvis Presley vs. JXL","year":"2002","id":"s000","players":1},{"game":"JD1","title":"Acceptable in the 80s","artist":"Calvin Harris","year":"2007","id":"s001","players":1},{"game":"JD1","title":"Bebe","artist":"Divine Brown","year":"2008","id":"s002","players":1},{"game":"JD1","title":"Can't Get You Out of My Head","artist":"Kylie Minogue","year":"2001","id":"s003","players":1},{"game":"JD1","title":"Cotton Eye Joe","artist":"Rednex","year":"1994","id":"s004","players":1},{"game":"JD1","title":"Crispy Duck","artist":"John Brooks","year":"2005","id":"s005"},{"game":"JD1","title":"Dare","artist":"Gorillaz","year":"2005","id":"s006","players":1},{"game":"JD1","title":"Eye of the Tiger","artist":"Survivor","year":"1982","id":"s007","players":1},{"game":"JD1","title":"Fame","artist":"Irene Cara","year":"1980","id":"s008","players":1},{"game":"JD1","title":"Funplex ( CSS Remix)","artist":"The B-52s","year":"2008","id":"s009","players":1},{"game":"JD1","title":"Girls & Boys","artist":"Blur","year":"1994","id":"s010","players":1},{"game":"JD1","title":"Girls Just Want to Have Fun","artist":"Cyndi Lauper","year":"1983","id":"s011","players":1},{"game":"JD1","title":"Groove Is in the Heart","artist":"Deee-Lite","year":"1990","id":"s012","players":1},{"game":"JD1","title":"Heart of Glass","artist":"Blondie","year":"1979","id":"s013","players":1},{"game":"JD1","title":"Hot n Cold","artist":"Katy Perry","year":"2008","id":"s014","players":1},{"game":"JD1","title":"I Get Around","artist":"The Beach Boys","year":"1964","id":"s015","players":1},{"game":"JD1","title":"I Like to Move It","artist":"Reel 2 Real featuring The Mad Stuntman","year":"1993","id":"s016","players":1},{"game":"JD1","title":"Jerk It Out","artist":"Caesars","year":"2002","id":"s017","players":1},{"game":"JD1","title":"Jin-Go-Lo-Ba","artist":"Fatboy Slim","year":"2004","id":"s018","players":1},{"game":"JD1","title":"Kids in America","artist":"Kim Wilde","year":"1981","id":"s019","players":1},{"game":"JD1","title":"Le Freak","artist":"Chic","year":"1978","id":"s020","players":1},{"game":"JD1","title":"Louie Louie","artist":"Iggy Pop","year":"1993","id":"s021","players":1},{"game":"JD1","title":"Lump","artist":"The Presidents of the United States of America","year":"1995","id":"s022","players":1},{"game":"JD1","title":"Mashed Potato Time","artist":"Dee Dee Sharp","year":"1962","id":"s023","players":1},{"game":"JD1","title":"Pump Up the Jam","artist":"Technotronic","year":"1989","id":"s024","players":1},{"game":"JD1","title":"Ring My Bell","artist":"Anita Ward","year":"1979","id":"s025","players":1},{"game":"JD1","title":"Step by Step","artist":"New Kids on the Block","year":"1990","id":"s026","players":1},{"game":"JD1","title":"Surfin' Bird","artist":"The Trashmen","year":"1963","id":"s027","players":1},{"game":"JD1","title":"That's the Way (I Like It)","artist":"KC and the Sunshine Band","year":"1975","id":"s028","players":1},{"game":"JD1","title":"U Can't Touch This","artist":"MC Hammer","year":"1990","id":"s029","players":1},{"game":"JD1","title":"Wannabe","artist":"Spice Girls","year":"1996","id":"s030","players":1},{"game":"JD1","title":"Who Let the Dogs Out","artist":"Baha Men","year":"2000","id":"s031","players":1},{"game":"JD1","title":"Womanizer","artist":"The Gym All-Stars","year":"2008","id":"s032","players":1},{"game":"JD2","title":"A-Punk","artist":"Vampire Weekend","year":"2008","id":"s033","players":2},{"game":"JD2","title":"Alright","artist":"Supergrass","year":"1995","id":"s034","players":2},{"game":"JD2","title":"Baby Girl","artist":"Reggaeton","year":"2009","id":"s035","players":1},{"game":"JD2","title":"Big Girl (You Are Beautiful)","artist":"MIKA","year":"2007","id":"s036","players":1},{"game":"JD2","title":"Body Movin' (Fatboy Slim Remix)","artist":"Beastie Boys","year":"1998","id":"s037","players":1},{"game":"JD2","title":"Call Me","artist":"Blondie","year":"1980","id":"s038","players":1},{"game":"JD2","title":"Cheesy Cha Cha","artist":"Christian Padovan, Stéphane Huguenin & Yves Sanna","year":"2008","id":"s039","players":1},{"game":"JD2","title":"Cosmic Girl","artist":"Jamiroquai","year":"1996","id":"s040","players":1},{"game":"JD2","title":"Crazy In Love","artist":"Studio Musicians","year":"2003","id":"s041","players":1},{"game":"JD2","title":"D.A.N.C.E.","artist":"Justice","year":"2007","id":"s042","players":1},{"game":"JD2","title":"Dagomba","artist":"Sorcerer","year":"2010","id":"s043","players":1},{"game":"JD2","title":"Funkytown","artist":"Sweat Invaders","year":"1980","id":"s044","players":1},{"game":"JD2","title":"Girlfriend","artist":"Avril Lavigne","year":"2007","id":"s045","players":2},{"game":"JD2","title":"Hey Ya!","artist":"Outkast","year":"2003","id":"s046","players":1},{"game":"JD2","title":"Holiday","artist":"The Hit Crew","year":"1983","id":"s047","players":1},{"game":"JD2","title":"Hot Stuff","artist":"Donna Summer","year":"1979","id":"s048","players":2},{"game":"JD2","title":"Idealistic","artist":"Digitalism","year":"2007","id":"s049","players":1},{"game":"JD2","title":"I Got You (I Feel Good)","artist":"James Brown","year":"1965","id":"s050","players":1},{"game":"JD2","title":"Iko Iko","artist":"Mardi Gras","year":"1953","id":"s051","players":1},{"game":"JD2","title":"It's Raining Men","artist":"The Weather Girls","year":"1982","id":"s052","players":1},{"game":"JD2","title":"I Want You Back","artist":"The Jackson 5","year":"1969","id":"s053","players":1},{"game":"JD2","title":"Jai Ho! (You Are My Destiny)","artist":"A. R. Rahman and The Pussycat Dolls featuring Nicole Scherzinger","year":"2009","id":"s054","players":1},{"game":"JD2","title":"Jump","artist":"Studio Allstars","year":"1992","id":"s055","players":2},{"game":"JD2","title":"Jump in the Line","artist":"Harry Belafonte","year":"1961","id":"s056","players":2},{"game":"JD2","title":"Jungle Boogie","artist":"Studio Musicians","year":"1973","id":"s057","players":1},{"game":"JD2","title":"Katti Kalandal","artist":"Tony Tape, Veilumuth Chitralekha","year":"2004","id":"s058","players":2},{"game":"JD2","title":"Monster Mash","artist":"The Frighteners","year":"1962","id":"s059","players":1},{"game":"JD2","title":"Move Your Feet","artist":"Junior Senior","year":"2002","id":"s060","players":1},{"game":"JD2","title":"Mugsy Baloney","artist":"Charleston","year":"2010","id":"s061","players":2},{"game":"JD2","title":"Proud Mary","artist":"Ike and Tina Turner","year":"1971","id":"s062","players":1},{"game":"JD2","title":"Rasputin","artist":"Boney M.","year":"1978","id":"s063","players":1},{"game":"JD2","title":"Rockafeller Skank","artist":"Fatboy Slim","year":"1998","id":"s064","players":1},{"game":"JD2","title":"S.O.S.","artist":"Rihanna","year":"2006","id":"s065","players":1},{"game":"JD2","title":"Satisfaction (Isak Original Extended)","artist":"Benny Benassi presents \"The Biz\"","year":"2002","id":"s066","players":1},{"game":"JD2","title":"Should I Stay Or Should I Go","artist":"The Clash","year":"1982","id":"s067","players":1},{"game":"JD2","title":"Soul Bossa Nova","artist":"Quincy Jones & His Orchestra","year":"1962","id":"s068","players":2},{"game":"JD2","title":"Sway (Quien Sera)","artist":"Marine Band","year":"2003","id":"s069","players":2},{"game":"JD2","title":"Sympathy For The Devil (Fatboy Slim Remix)","artist":"The Rolling Stones","year":"1968","id":"s070","players":1},{"game":"JD2","title":"Take Me Out","artist":"Franz Ferdinand","year":"2004","id":"s071","players":1},{"game":"JD2","title":"That's Not My Name","artist":"The Ting Tings","year":"2008","id":"s072","players":1},{"game":"JD2","title":"The Power","artist":"Snap!","year":"1990","id":"s073","players":1},{"game":"JD2","title":"The Shoop Shoop Song (It's In His Kiss)","artist":"Cher","year":"1990","id":"s074","players":2},{"game":"JD2","title":"TiK ToK","artist":"Ke$ha","year":"2009","id":"s075","players":1},{"game":"JD2","title":"Toxic","artist":"The Hit Crew","year":"2004","id":"s076","players":1},{"game":"JD2","title":"Viva Las Vegas","artist":"Elvis Presley","year":"1964","id":"s077","players":1},{"game":"JD2","title":"Wake Me Up Before You Go Go","artist":"Wham!","year":"1984","id":"s078","players":1},{"game":"JD2","title":"Walk Like An Egyptian","artist":"Bangles","year":"1986","id":"s079","players":1},{"game":"JD2","title":"When I Grow Up","artist":"The Pussycat Dolls","year":"2008","id":"s080","players":1},{"game":"JD3","title":"California Gurls","artist":"Katy Perry featuring Snoop Dogg","year":"2010","id":"s081","players":1},{"game":"JD3","title":"Take On Me","artist":"a-ha","year":"1985","id":"s082","players":1},{"game":"JD3","title":"Pump It","artist":"The Black Eyed Peas","year":"2006","id":"s083","players":1},{"game":"JD3","title":"Lollipop","artist":"Mika","year":"2007","id":"s084","players":1},{"game":"JD3","title":"Promiscuous","artist":"Nelly Furtado featuring Timbaland","year":"2006","id":"s085","players":2,"adult":true},{"game":"JD3","title":"...Baby One More Time","artist":"The Girly Team","year":"1998","id":"s086","players":4},{"game":"JD3","title":"Price Tag","artist":"Jessie J featuring B.o.B","year":"2011","id":"s087","players":1},{"game":"JD3","title":"I Don't Feel Like Dancin '","artist":"Scissor Sisters","year":"2006","id":"s088","players":1},{"game":"JD3","title":"Marcia Baila","artist":"Les Rita Mitsouko","year":"1984","id":"s089","players":1},{"game":"JD3","title":"Barbra Streisand","artist":"Duck Sauce","year":"2010","id":"s090","players":1},{"game":"JD3","title":"Venus","artist":"Bananarama","year":"1986","id":"s091","players":1},{"game":"JD3","title":"No Limit","artist":"2 Unlimited","year":"1993","id":"s092","players":2},{"game":"JD3","title":"Dynamite","artist":"Taio Cruz","year":"2010","id":"s093","players":4},{"game":"JD3","title":"Teenage Dream","artist":"Katy Perry","year":"2010","id":"s094","players":1},{"game":"JD3","title":"Only Girl (In the World)","artist":"Rihanna","year":"2010","id":"s095","players":1},{"game":"JD3","title":"Forget You","artist":"Cee Lo Green","year":"2010","id":"s096","players":1},{"game":"JD3","title":"Jump (for My Love)","artist":"Girls Aloud","year":"2003","id":"s097","players":2},{"game":"JD3","title":"Gonna Make You Sweat (Everybody Dance Now)","artist":"Sweat Invaders","year":"1990","id":"s098","players":1},{"game":"JD3","title":"What You Waiting For","artist":"Gwen Stefani","year":"2004","id":"s099","players":1},{"game":"JD3","title":"Crazy Little Thing Called Love","artist":"Queen","year":"1979","id":"s100","players":2},{"game":"JD3","title":"Think","artist":"The London Theatre Orchestra & Cast","year":"1968","id":"s101","players":1},{"game":"JD3","title":"Boogie Wonderland","artist":"Groove Century","year":"1979","id":"s102","players":4},{"game":"JD3","title":"Hey Boy Hey Girl","artist":"The Chemical Brothers","year":"1999","id":"s103","players":1},{"game":"JD3","title":"E.T.","artist":"Katy Perry","year":"2011","id":"s104","players":1},{"game":"JD3","title":"Boom","artist":"Reggaeton Storm","year":"2005","id":"s105","players":1},{"game":"JD3","title":"Da Funk","artist":"Daft Punk","year":"1995","id":"s106","players":2},{"game":"JD3","title":"I Feel Love","artist":"Donna Summer","year":"1977","id":"s107","players":1},{"game":"JD3","title":"Dance All Nite","artist":"Anja","year":"2011","id":"s108","players":1},{"game":"JD3","title":"Spectronizer","artist":"Sentai Express","year":"2011","id":"s109","players":4},{"game":"JD3","title":"Party Rock Anthem","artist":"LMFAO featuring Lauren Bennett and GoonRock","year":"2011","id":"s110","players":1},{"game":"JD3","title":"Are You Gonna Go My Way","artist":"Lenny Kravitz","year":"1993","id":"s111","players":1},{"game":"JD3","title":"Land of 1000 Dances","artist":"Wilson Pickett","year":"1966","id":"s112","players":1},{"game":"JD3","title":"She's Got Me Dancing","artist":"Tommy Sparks","year":"2009","id":"s113","players":1},{"game":"JD3","title":"Jamaican Dance","artist":"Konshens","year":"2011","id":"s114","players":1},{"game":"JD3","title":"Let's Go to the Mall","artist":"Robin Sparkles","year":"2006","id":"s115","players":1},{"game":"JD3","title":"Night Boat to Cairo","artist":"Madness","year":"1979","id":"s116","players":4},{"game":"JD3","title":"I'm So Excited","artist":"The Pointer Sisters","year":"1982","id":"s117","players":1},{"game":"JD3","title":"Video Killed the Radio Star","artist":"The Buggles","year":"1979","id":"s118","players":1},{"game":"JD3","title":"Kurio ko uddah le jana","artist":"Lata Mangeshkar and S.P. Balasubrahmanyam","year":"1994","id":"s119","players":2},{"game":"JD3","title":"Giddy on Up (Giddy on Out)","artist":"Laura Bell Bundy","year":"2010","id":"s120","players":1},{"game":"JD3","title":"I Was Made for Lovin' You","artist":"Kiss","year":"1979","id":"s121","players":4},{"game":"JD3","title":"Tightrope (Solo Version)","artist":"Janelle Monáe","year":"2010","id":"s122","players":1},{"game":"JD3","title":"Airplanes","artist":"B.o.B featuring Hayley Williams of Paramore","year":"2010","id":"s123","players":1},{"game":"JD3","title":"Beautiful Liar","artist":"Countdown Mix Masters","year":"2007","id":"s124","players":2},{"game":"JD3","title":"Apache (Jump On It)","artist":"The Sugarhill Gang","year":"1981","id":"s125","players":1},{"game":"JD3","title":"Pata Pata","artist":"African Ladies","year":"1967","id":"s126","players":2},{"game":"JD3","title":"Satellite","artist":"Lena Meyer-Landrut","year":"2010","id":"s127","players":1},{"game":"JD3","title":"Somethin' Stupid","artist":"Robbie Williams and Nicole Kidman","year":"2001","id":"s128","players":2},{"game":"JD3","title":"This Is Halloween","artist":"Danny Elfman","year":"1993","id":"s129","players":4},{"game":"JD3","title":"Jambo Mambo","artist":"Ole Orquesta","year":"1997","id":"s130","players":2},{"game":"JD3","title":"Baby Don't Stop Now","artist":"Anja","year":"2011","id":"s131","players":1},{"game":"JD3","title":"Twist and Shake It","artist":"The Girly Team","year":"2010","id":"s132","players":2},{"game":"JD3","title":"Soul Searchin","artist":"Groove Century","year":"1979","id":"s133","players":1},{"game":"JD3","title":"Baby Zouk","artist":"Dr. Creole","year":"2011","id":"s134","players":2},{"game":"JD3","title":"Hungarian Dance No. 5","artist":"Johannes Brahms (Brahms by Just Dance Classical Orchestra)","year":"1880","id":"s135","players":2},{"game":"JD3","title":"Mamasita","artist":"Latino Sunset","year":"2011","id":"s136","players":2},{"game":"JD3","title":"The Master Blaster","artist":"Inspector Marceau","year":"1969","id":"s137","players":2},{"game":"JD4","title":"(I've Had) The Time of My Life","artist":"Bill Medley and Jennifer Warnes","year":"1987","id":"s138","players":2},{"game":"JD4","title":"Ain't No Other Man","artist":"The Girly Team","year":"2006","id":"s139","players":1},{"game":"JD4","title":"Asereje (The Ketchup Song)","artist":"Las Ketchup","year":"2002","id":"s140","players":2},{"game":"JD4","title":"Beauty and a Beat","artist":"Justin Bieber featuring Nicki Minaj","year":"2012","id":"s141","players":1},{"game":"JD4","title":"Beware of the Boys (Mundian To Bach Ke)","artist":"Panjabi MC","year":"1998","id":"s142","players":4},{"game":"JD4","title":"Brand New Start","artist":"Anja","year":"2012","id":"s143","players":1},{"game":"JD4","title":"Call Me Maybe","artist":"Carly Rae Jepsen","year":"2012","id":"s144","players":1},{"game":"JD4","title":"Can't Take My Eyes Off You","artist":"Boys Town Gang","year":"1982","id":"s145","players":2},{"game":"JD4","title":"Cercavo Amore","artist":"Emma","year":"2012","id":"s146","players":1},{"game":"JD4","title":"Crazy Little Thing","artist":"Anja","year":"2012","id":"s147","players":1},{"game":"JD4","title":"Crucified","artist":"Army of Lovers","year":"1991","id":"s148","players":4},{"game":"JD4","title":"Diggin' in the Dirt","artist":"Stefanie Heinzmann","year":"2012","id":"s149","players":1},{"game":"JD4","title":"Disturbia","artist":"Rihanna","year":"2008","id":"s150","players":1},{"game":"JD4","title":"Domino","artist":"Jessie J","year":"2011","id":"s151","players":1},{"game":"JD4","title":"Everybody Needs Somebody to Love","artist":"Dancing Bros.","year":"1980","id":"s152","players":2},{"game":"JD4","title":"Good Feeling","artist":"Flo Rida","year":"2011","id":"s153","players":1},{"game":"JD4","title":"Good Girl","artist":"Carrie Underwood","year":"2012","id":"s154","players":1},{"game":"JD4","title":"Hit 'Em Up Style (Oops!)","artist":"Blu Cantrell","year":"2001","id":"s155","players":1},{"game":"JD4","title":"Hot For Me","artist":"A.K.A","year":"2012","id":"s156","players":1},{"game":"JD4","title":"I Like It","artist":"The Blackout All-Stars","year":"1994","id":"s157","players":3},{"game":"JD4","title":"Istanbul (Not Constantinople)","artist":"They Might Be Giants","year":"1990","id":"s158","players":4},{"game":"JD4","title":"Jailhouse Rock","artist":"Elvis Presley","year":"1957","id":"s159","players":4},{"game":"JD4","title":"Livin' la Vida Loca","artist":"Ricky Martin","year":"1999","id":"s160","players":1},{"game":"JD4","title":"Love You Like A Love Song","artist":"Selena Gomez & the Scene","year":"2011","id":"s161","players":1},{"game":"JD4","title":"Make the Party (Don't Stop)","artist":"Bunny Beatz featuring Liquid","year":"2012","id":"s162","players":1},{"game":"JD4","title":"Maneater","artist":"Nelly Furtado","year":"2006","id":"s163","players":1},{"game":"JD4","title":"Mas Que Nada","artist":"Sérgio Mendes featuring The Black Eyed Peas","year":"2006","id":"s164","players":1},{"game":"JD4","title":"Moves Like Jagger","artist":"Maroon 5 featuring Christina Aguilera","year":"2011","id":"s165","players":1},{"game":"JD4","title":"Mr. Saxobeat","artist":"Alexandra Stan","year":"2011","id":"s166","players":1},{"game":"JD4","title":"Never Gonna Give You Up","artist":"Rick Astley","year":"1987","id":"s167","players":1},{"game":"JD4","title":"Oh No!","artist":"Marina and the Diamonds","year":"2010","id":"s168","players":1},{"game":"JD4","title":"On The Floor","artist":"Jennifer Lopez featuring Pitbull","year":"2011","id":"s169","players":1},{"game":"JD4","title":"Oops!... I Did It Again","artist":"The Girly Team","year":"2000","id":"s170","players":4},{"game":"JD4","title":"Rock Lobster","artist":"The B-52's","year":"1978","id":"s171","players":2},{"game":"JD4","title":"Rock n' Roll (Will Take You to the Mountain)","artist":"Skrillex","year":"2010","id":"s172","players":1},{"game":"JD4","title":"Run The Show","artist":"Kat DeLuna featuring Busta Rhymes","year":"2008","id":"s173","players":2},{"game":"JD4","title":"So What","artist":"P!nk","year":"2008","id":"s174","players":1},{"game":"JD4","title":"Some Catchin' Up to Do","artist":"Sammy","year":"2012","id":"s175","players":1},{"game":"JD4","title":"Super Bass","artist":"Nicki Minaj","year":"2010","id":"s176","players":1},{"game":"JD4","title":"Superstition","artist":"Stevie Wonder","year":"1972","id":"s177","players":1},{"game":"JD4","title":"The Final Countdown","artist":"Europe","year":"1986","id":"s178","players":2},{"game":"JD4","title":"Time Warp","artist":"Halloween Thrills","year":"1975","id":"s179","players":4},{"game":"JD4","title":"Tribal Dance","artist":"2 Unlimited","year":"1993","id":"s180","players":2},{"game":"JD4","title":"Umbrella","artist":"Rihanna featuring Jay-Z","year":"2007","id":"s181","players":1},{"game":"JD4","title":"Want U Back","artist":"Cher Lloyd featuring Astro","year":"2012","id":"s182","players":1},{"game":"JD4","title":"We No Speak Americano","artist":"Hit the Electro Beat","year":"2010","id":"s183","players":1},{"game":"JD4","title":"What Makes You Beautiful","artist":"One Direction","year":"2011","id":"s184","players":4},{"game":"JD4","title":"Wild Wild West","artist":"Will Smith","year":"1999","id":"s185","players":4},{"game":"JD4","title":"You Make Me Feel...","artist":"Cobra Starship featuring Sabi","year":"2011","id":"s186","players":1},{"game":"JD4","title":"You're the First, the Last, My Everything","artist":"Barry White","year":"1974","id":"s187","players":4},{"game":"JD2014","title":"#thatPOWER","artist":"will.i.am featuring Justin Bieber","year":"2013","id":"s188","players":4},{"game":"JD2014","title":"99 Luftballons","artist":"Rutschen Planeten","year":"1983","id":"s189","players":2},{"game":"JD2014","title":"Alfonso Signorini (Eroe Nazionale)","artist":"Fedez","year":"2013","id":"s190","players":1},{"game":"JD2014","title":"Applause","artist":"Lady Gaga","year":"2013","id":"s191","players":1},{"game":"JD2014","title":"Aquarius/Let the Sunshine In","artist":"The Sunlight Shakers","year":"1969","id":"s192","players":2},{"game":"JD2014","title":"Blame It on the Boogie","artist":"Mick Jackson","year":"1978","id":"s193","players":4},{"game":"JD2014","title":"Blurred Lines","artist":"Robin Thicke featuring Pharrell Williams","year":"2013","id":"s194","players":2,"adult":true},{"game":"JD2014","title":"C'mon","artist":"Ke$ha","year":"2012","id":"s195","players":2},{"game":"JD2014","title":"Candy","artist":"Robbie Williams","year":"2012","id":"s196","players":2},{"game":"JD2014","title":"Careless Whisper","artist":"George Michael","year":"1984","id":"s197","players":2},{"game":"JD2014","title":"Could You Be Loved","artist":"Bob Marley","year":"1980","id":"s198","players":2},{"game":"JD2014","title":"Dançando","artist":"Ivete Sangalo","year":"2013","id":"s199","players":1},{"game":"JD2014","title":"Danse (Pop Version)","artist":"Tal","year":"2013","id":"s200","players":1},{"game":"JD2014","title":"Feel So Right","artist":"Imposs featuring Konshens","year":"2013","id":"s201","players":1},{"game":"JD2014","title":"Feel This Moment","artist":"Pitbull featuring Christina Aguilera","year":"2013","id":"s202","players":1},{"game":"JD2014","title":"Fine China","artist":"Chris Brown","year":"2013","id":"s203","players":1},{"game":"JD2014","title":"Flashdance... What a Feeling","artist":"The Girly Team","year":"1983","id":"s204","players":1},{"game":"JD2014","title":"Follow the Leader","artist":"Wisin & Yandel featuring Jennifer Lopez","year":"2012","id":"s205","players":1},{"game":"JD2014","title":"Gentleman","artist":"Psy","year":"2013","id":"s206","players":1},{"game":"JD2014","title":"Get Lucky","artist":"Daft Punk featuring Pharrell Williams","year":"2013","id":"s207","players":2},{"game":"JD2014","title":"Ghostbusters","artist":"Ray Parker Jr.","year":"1984","id":"s208","players":4},{"game":"JD2014","title":"Gimme! Gimme! Gimme! (A Man After Midnight)","artist":"ABBA","year":"1979","id":"s209","players":1},{"game":"JD2014","title":"I Kissed a Girl","artist":"Katy Perry","year":"2008","id":"s210","players":1},{"game":"JD2014","title":"I Will Survive","artist":"Gloria Gaynor","year":"1978","id":"s211","players":1},{"game":"JD2014","title":"In the Summertime","artist":"Mungo Jerry","year":"1970","id":"s212","players":4},{"game":"JD2014","title":"Isidora","artist":"Bog Bog Orkestar","year":"1952","id":"s213","players":1},{"game":"JD2014","title":"It's You","artist":"Duck Sauce","year":"2013","id":"s214","players":1},{"game":"JD2014","title":"Just a Gigolo","artist":"Louis Prima","year":"1956","id":"s215","players":2},{"game":"JD2014","title":"Just Dance","artist":"Lady Gaga featuring Colby O'Donis","year":"2008","id":"s216","players":1},{"game":"JD2014","title":"Kiss You","artist":"One Direction","year":"2013","id":"s217","players":4},{"game":"JD2014","title":"Limbo","artist":"Daddy Yankee","year":"2012","id":"s218","players":2},{"game":"JD2014","title":"Love Boat","artist":"Frankie Bostello","year":"1977","id":"s219","players":1},{"game":"JD2014","title":"María","artist":"Ricky Martin","year":"1995","id":"s220","players":1},{"game":"JD2014","title":"Miss Understood","artist":"Sammie","year":"2013","id":"s221","players":1},{"game":"JD2014","title":"Moskau","artist":"Dancing Bros.","year":"1979","id":"s222","players":2},{"game":"JD2014","title":"Nitro Bot","artist":"Sentai Express","year":"2013","id":"s223","players":2},{"game":"JD2014","title":"Pound the Alarm","artist":"Nicki Minaj","year":"2012","id":"s224","players":4},{"game":"JD2014","title":"Prince Ali","artist":"Disney's Aladdin","year":"1992","id":"s225","players":4},{"game":"JD2014","title":"Rich Girl","artist":"Gwen Stefani featuring Eve","year":"2004","id":"s226","players":1},{"game":"JD2014","title":"Safe and Sound","artist":"Capital Cities","year":"2011","id":"s227","players":1},{"game":"JD2014","title":"She Wolf (Falling to Pieces)","artist":"David Guetta featuring Sia","year":"2012","id":"s228","players":1},{"game":"JD2014","title":"Starships","artist":"Nicki Minaj","year":"2012","id":"s229","players":1},{"game":"JD2014","title":"The Other Side","artist":"Jason Derulo","year":"2013","id":"s230","players":1},{"game":"JD2014","title":"The Way","artist":"Ariana Grande featuring Mac Miller","year":"2013","id":"s231","players":2},{"game":"JD2014","title":"Troublemaker","artist":"Olly Murs featuring Flo Rida","year":"2012","id":"s232","players":1},{"game":"JD2014","title":"Turn Up the Love","artist":"Far East Movement featuring Cover Drive","year":"2012","id":"s233","players":2},{"game":"JD2014","title":"Waking Up in Vegas","artist":"Katy Perry","year":"2008","id":"s234","players":1},{"game":"JD2014","title":"Where Have You Been","artist":"Rihanna","year":"2011","id":"s235","players":1},{"game":"JD2014","title":"Wild","artist":"Jessie J featuring Big Sean","year":"2013","id":"s236","players":1},{"game":"JD2014","title":"Y.M.C.A","artist":"Village People","year":"1978","id":"s237","players":4},{"game":"JD2015","title":"4x4","artist":"Miley Cyrus","year":"2013","id":"s238","players":4},{"game":"JD2015","title":"Addicted to You","artist":"Avicii","year":"2013","id":"s239","players":1},{"game":"JD2015","title":"Ain't No Mountain High Enough","artist":"Marvin Gaye and Tammi Terrell","year":"1967","id":"s240","players":2},{"game":"JD2015","title":"Bad Romance","artist":"Lady Gaga","year":"2009","id":"s241","players":3},{"game":"JD2015","title":"Bailando","artist":"Enrique Iglesias featuring Descemer Bueno and Gente de Zona","year":"2014","id":"s242","players":2,"adult":true},{"game":"JD2015","title":"Bang Bang","artist":"Jessie J , Ariana Grande and Nicki Minaj","year":"2014","id":"s243","players":4},{"game":"JD2015","title":"Best Song Ever","artist":"One Direction","year":"2013","id":"s244","players":4},{"game":"JD2015","title":"Birthday","artist":"Katy Perry","year":"2014","id":"s245","players":1},{"game":"JD2015","title":"Black Widow","artist":"Iggy Azalea featuring Rita Ora","year":"2014","id":"s246","players":1},{"game":"JD2015","title":"Built for This","artist":"Becky G","year":"2013","id":"s247","players":1},{"game":"JD2015","title":"Burn","artist":"Ellie Goulding","year":"2013","id":"s248","players":1},{"game":"JD2015","title":"Dancing Diva","artist":"The Girly Team","year":"2006","id":"s249","players":1},{"game":"JD2015","title":"Dark Horse","artist":"Katy Perry","year":"2014","id":"s250","players":3},{"game":"JD2015","title":"Diamonds","artist":"Rihanna","year":"2012","id":"s251","players":1},{"game":"JD2015","title":"Don't Worry, Be Happy","artist":"The Bench Men","year":"1988","id":"s252","players":3},{"game":"JD2015","title":"Epic Sirtaki","artist":"The Bouzouki's","year":"1974","id":"s253","players":3},{"game":"JD2015","title":"Fatima","artist":"Cheb Salama","year":"2014","id":"s254","players":1},{"game":"JD2015","title":"Get Low","artist":"Dillon Francis and DJ Snake","year":"2014","id":"s255","players":2},{"game":"JD2015","title":"Happy","artist":"Pharrell Williams","year":"2013","id":"s256","players":1},{"game":"JD2015","title":"High Light, High Life","artist":"Eason Chan","year":"2013","id":"s257","players":1},{"game":"JD2015","title":"Holding Out for a Hero","artist":"Bonnie Tyler","year":"1984","id":"s258","players":1},{"game":"JD2015","title":"I Love It","artist":"Icona Pop featuring Charli XCX","year":"2012","id":"s259","players":1},{"game":"JD2015","title":"It's My Birthday","artist":"will.i.am and Cody Wise","year":"2014","id":"s260","players":3},{"game":"JD2015","title":"Let It Go","artist":"Disney's Frozen","year":"2013","id":"s261","players":2},{"game":"JD2015","title":"Little Apple","artist":"Chopstick Brothers","year":"2014","id":"s262","players":2},{"game":"JD2015","title":"Love Is All","artist":"The Sunlight Shakers","year":"1974","id":"s263","players":2},{"game":"JD2015","title":"Love Me Again","artist":"John Newman","year":"2013","id":"s264","players":1},{"game":"JD2015","title":"Macarena (Bayside Boys Remix)","artist":"The Girly Team","year":"1995","id":"s265","players":4},{"game":"JD2015","title":"Mahna Mahna","artist":"Frankie Bostello","year":"1968","id":"s266","players":3},{"game":"JD2015","title":"Maps","artist":"Maroon 5","year":"2014","id":"s267","players":1},{"game":"JD2015","title":"Me and My Broken Heart","artist":"Rixton","year":"2014","id":"s268","players":2},{"game":"JD2015","title":"Never Can Say Goodbye","artist":"Gloria Gaynor","year":"1974","id":"s269","players":1},{"game":"JD2015","title":"Nitro Bot","artist":"Sentai Express","year":"2013","id":"s270","players":2},{"game":"JD2015","title":"Only You (and You Alone)","artist":"Love Letter","year":"1955","id":"s271","players":2},{"game":"JD2015","title":"Papaoutai","artist":"Stromae","year":"2013","id":"s272","players":2},{"game":"JD2015","title":"Problem","artist":"Ariana Grande featuring Iggy Azalea and Big Sean","year":"2014","id":"s273","players":1},{"game":"JD2015","title":"She Looks So Perfect","artist":"5 Seconds of Summer","year":"2014","id":"s274","players":4},{"game":"JD2015","title":"Speedy Gonzalez","artist":"Los Pimientos Locos","year":"1961","id":"s275","players":2},{"game":"JD2015","title":"Summer","artist":"Calvin Harris","year":"2014","id":"s276","players":1},{"game":"JD2015","title":"Tetris","artist":"Dancing Bros.","year":"1989","id":"s277","players":4},{"game":"JD2015","title":"The Fox (What Does the Fox Say?)","artist":"Ylvis","year":"2013","id":"s278","players":3},{"game":"JD2015","title":"Till I Find You","artist":"Austin Mahone","year":"2014","id":"s279","players":1},{"game":"JD2015","title":"Us Under the Sunshine","artist":"Wanting Qu","year":"2013","id":"s280","players":4},{"game":"JD2015","title":"Walk This Way","artist":"Run-DMC and Aerosmith","year":"1986","id":"s281","players":4},{"game":"JD2015","title":"Xmas Tree","artist":"Bollywood Santa","year":"2014","id":"s282","players":2},{"game":"JD2015","title":"You Spin Me Round (Like a Record)","artist":"Dead or Alive","year":"1984","id":"s283","players":1},{"game":"JD2015","title":"You're on My Mind","artist":"Imposs featuring J. Perry","year":"2014","id":"s284","players":4},{"game":"JD2016","title":"All About That Bass","artist":"Meghan Trainor","year":"2014","id":"s285","players":1},{"game":"JD2016","title":"Animals","artist":"Martin Garrix","year":"2013","id":"s286","players":2},{"game":"JD2016","title":"Balkan Blast Remix","artist":"Angry Birds","year":"2015","id":"s287","players":4},{"game":"JD2016","title":"Blame","artist":"Calvin Harris featuring John Newman","year":"2014","id":"s288","players":1},{"game":"JD2016","title":"Born This Way","artist":"Lady Gaga","year":"2011","id":"s289","players":3},{"game":"JD2016","title":"Boys (Summertime Love)","artist":"The Lemon Cubes","year":"1987","id":"s290","players":3},{"game":"JD2016","title":"Chiwawa","artist":"Wanko Ni Mero Mero","year":"2015","id":"s291","players":1},{"game":"JD2016","title":"Circus","artist":"Britney Spears","year":"2008","id":"s292","players":4},{"game":"JD2016","title":"Cool for the Summer","artist":"Demi Lovato","year":"2015","id":"s293","players":1},{"game":"JD2016","title":"Copacabana","artist":"Frankie Bostello","year":"1978","id":"s294","players":4},{"game":"JD2016","title":"Drop The Mambo","artist":"Diva Carmina","year":"2015","id":"s295","players":1},{"game":"JD2016","title":"Fancy","artist":"Iggy Azalea featuring Charli XCX","year":"2014","id":"s296","players":3},{"game":"JD2016","title":"Fun","artist":"Pitbull featuring Chris Brown","year":"2015","id":"s297","players":1},{"game":"JD2016","title":"Gibberish","artist":"MAX","year":"2015","id":"s298","players":2},{"game":"JD2016","title":"Hangover (BaBaBa)","artist":"Buraka Som Sistema","year":"2011","id":"s299","players":2},{"game":"JD2016","title":"Heartbeat Song","artist":"Kelly Clarkson","year":"2015","id":"s300","players":1},{"game":"JD2016","title":"Hey Mama","artist":"David Guetta featuring Nicki Minaj , Bebe Rexha and Afrojack","year":"2015","id":"s301","players":3,"adult":true},{"game":"JD2016","title":"Hit the Road Jack","artist":"Charles Percy","year":"1961","id":"s302","players":2},{"game":"JD2016","title":"I Gotta Feeling","artist":"The Black Eyed Peas","year":"2009","id":"s303","players":1},{"game":"JD2016","title":"I'm an Albatraoz","artist":"AronChupa","year":"2014","id":"s304","players":1},{"game":"JD2016","title":"Ievan Polkka","artist":"Hatsune Miku","year":"2007","id":"s305","players":1},{"game":"JD2016","title":"Irish Meadow Dance","artist":"O'Callaghan's Orchestra","year":"2015","id":"s306","players":4},{"game":"JD2016","title":"Junto A Ti","artist":"Cast of Disney's Violetta","year":"2012","id":"s307","players":3},{"game":"JD2016","title":"Kaboom Pow","artist":"Nikki Yanofsky","year":"2015","id":"s308","players":1},{"game":"JD2016","title":"Kool Kontact","artist":"Glorious Black Belts","year":"2015","id":"s309","players":2},{"game":"JD2016","title":"Let's Groove","artist":"Equinox Stars","year":"1981","id":"s310","players":3},{"game":"JD2016","title":"Lights","artist":"Ellie Goulding","year":"2011","id":"s311","players":1},{"game":"JD2016","title":"No Control","artist":"One Direction","year":"2014","id":"s312","players":4},{"game":"JD2016","title":"Rabiosa","artist":"Shakira featuring El Cata","year":"2011","id":"s313","players":1},{"game":"JD2016","title":"Same Old Love","artist":"Selena Gomez","year":"2015","id":"s314","players":3},{"game":"JD2016","title":"Stadium Flow","artist":"Imposs","year":"2015","id":"s315","players":1},{"game":"JD2016","title":"Stuck on a Feeling","artist":"Prince Royce","year":"2014","id":"s316","players":1},{"game":"JD2016","title":"Teacher","artist":"Nick Jonas","year":"2014","id":"s317","players":1},{"game":"JD2016","title":"The Choice Is Yours","artist":"Darius Dante Van Dijk","year":"2015","id":"s318","players":1},{"game":"JD2016","title":"These Boots Are Made For Walkin'","artist":"The Girly Team","year":"1966","id":"s319","players":1},{"game":"JD2016","title":"This Is How We Do","artist":"Katy Perry","year":"2014","id":"s320","players":4},{"game":"JD2016","title":"Under the Sea","artist":"Disney's The Little Mermaid","year":"1989","id":"s321","players":1},{"game":"JD2016","title":"Uptown Funk","artist":"Mark Ronson featuring Bruno Mars","year":"2014","id":"s322","players":1},{"game":"JD2016","title":"Want to Want Me","artist":"Jason Derulo","year":"2015","id":"s323","players":1},{"game":"JD2016","title":"When the Rain Begins to Fall","artist":"Sky Trucking","year":"1984","id":"s324","players":2},{"game":"JD2016","title":"William Tell Overture","artist":"Rossini","year":"1828","id":"s325","players":2},{"game":"JD2016","title":"You Never Can Tell","artist":"A. Caveman & The Backseats","year":"1964","id":"s326","players":2},{"game":"JD2016","title":"You're the One That I Want","artist":"From the Movie Grease","year":"1978","id":"s327","players":2},{"game":"JD2017","title":"All About Us","artist":"Jordan Fisher","year":"2016","id":"s328","players":3},{"game":"JD2017","title":"Bailar","artist":"Deorro featuring Elvis Crespo","year":"2016","id":"s329","players":1},{"game":"JD2017","title":"Bang","artist":"Anitta","year":"2015","id":"s330","players":1},{"game":"JD2017","title":"Bonbon","artist":"Era Istrefi","year":"2015","id":"s331","players":1},{"game":"JD2017","title":"Cake by the Ocean","artist":"DNCE","year":"2015","id":"s332","players":1,"adult":true},{"game":"JD2017","title":"Can't Feel My Face","artist":"The Weeknd","year":"2015","id":"s333","players":1},{"game":"JD2017","title":"Carnaval Boom","artist":"Latino Sunset","year":"2016","id":"s334","players":1},{"game":"JD2017","title":"Cheap Thrills","artist":"Sia featuring Sean Paul","year":"2016","id":"s335","players":1},{"game":"JD2017","title":"Chiwawa","artist":"Wanko Ni Mero Mero","year":"2015","id":"s336","players":1},{"game":"JD2017","title":"Cola Song","artist":"Inna featuring J Balvin","year":"2014","id":"s337","players":1,"adult":true},{"game":"JD2017","title":"Daddy","artist":"Psy featuring CL of 2NE1","year":"2015","id":"s338","players":1},{"game":"JD2017","title":"Don't Stop Me Now","artist":"Queen","year":"1979","id":"s339","players":1},{"game":"JD2017","title":"Don't Wanna Know","artist":"Maroon 5","year":"2016","id":"s340","players":1},{"game":"JD2017","title":"Dragostea Din Tei","artist":"O-Zone","year":"2003","id":"s341","players":3},{"game":"JD2017","title":"El Tiki","artist":"Maluma","year":"2015","id":"s342","players":2,"adult":true},{"game":"JD2017","title":"Ghost In the Keys","artist":"Halloween Thrills","year":"2016","id":"s343","players":4},{"game":"JD2017","title":"Groove","artist":"Jack & Jack","year":"2014","id":"s344","players":2},{"game":"JD2017","title":"Hips Don't Lie","artist":"Shakira featuring Wyclef Jean","year":"2006","id":"s345","players":1},{"game":"JD2017","title":"I Love Rock 'n Roll","artist":"Fast Forward Highway","year":"1982","id":"s346","players":1},{"game":"JD2017","title":"Into You","artist":"Ariana Grande","year":"2016","id":"s347","players":1},{"game":"JD2017","title":"La Bicicleta","artist":"Carlos Vives and Shakira","year":"2016","id":"s348","players":2},{"game":"JD2017","title":"Last Christmas","artist":"Santa Clones","year":"1984","id":"s349","players":2},{"game":"JD2017","title":"Lean On","artist":"Major Lazer featuring MØ and DJ Snake","year":"2015","id":"s350","players":4},{"game":"JD2017","title":"Leila","artist":"Cheb Salama","year":"2016","id":"s351","players":1},{"game":"JD2017","title":"Like I Would","artist":"Zayn","year":"2016","id":"s352","players":1},{"game":"JD2017","title":"Little Swing","artist":"AronChupa featuring Little Sis Nora","year":"2016","id":"s353","players":2},{"game":"JD2017","title":"Oishii Oishii","artist":"Wanko Ni Mero Mero","year":"2016","id":"s354","players":2},{"game":"JD2017","title":"PoPiPo","artist":"Hatsune Miku","year":"2007","id":"s355","players":3},{"game":"JD2017","title":"RADICAL","artist":"Dyro and Dannic","year":"2014","id":"s356","players":1},{"game":"JD2017","title":"Run The Night","artist":"Gigi Rowe","year":"2016","id":"s357","players":1},{"game":"JD2017","title":"Scream & Shout","artist":"will.i.am featuring Britney Spears","year":"2012","id":"s358","players":4},{"game":"JD2017","title":"September","artist":"Equinox Stars","year":"1978","id":"s359","players":3},{"game":"JD2017","title":"Single Ladies (Put a Ring on It)","artist":"Beyoncé","year":"2008","id":"s360","players":1},{"game":"JD2017","title":"Sorry","artist":"Justin Bieber","year":"2015","id":"s361","players":1},{"game":"JD2017","title":"Te Dominar","artist":"Daya Luz","year":"2016","id":"s362","players":3},{"game":"JD2017","title":"Tico-Tico no Fubá","artist":"The Frankie Bostello Orchestra","year":"1917","id":"s363","players":2},{"game":"JD2017","title":"Titanium","artist":"David Guetta featuring Sia","year":"2011","id":"s364","players":1},{"game":"JD2017","title":"Watch Me (Whip/Nae Nae)","artist":"Silentó","year":"2015","id":"s365","players":4},{"game":"JD2017","title":"What Is Love","artist":"Ultraclub 90","year":"1993","id":"s366","players":1},{"game":"JD2017","title":"Wherever I Go","artist":"OneRepublic","year":"2016","id":"s367","players":1},{"game":"JD2017","title":"William Tell Overture","artist":"Rossini","year":"1829","id":"s368","players":2},{"game":"JD2017","title":"Worth It","artist":"Fifth Harmony featuring Kid Ink","year":"2015","id":"s369","players":1,"adult":true},{"game":"JD2018","title":"24K Magic","artist":"Bruno Mars","year":"2016","id":"s370","players":2},{"game":"JD2018","title":"All You Gotta Do (Is Just Dance)","artist":"The Just Dance Band","year":"2017","id":"s371","players":1},{"game":"JD2018","title":"Another One Bites the Dust","artist":"Queen","year":"1980","id":"s372","players":4},{"game":"JD2018","title":"Automaton","artist":"Jamiroquai","year":"2017","id":"s373","players":1},{"game":"JD2018","title":"Bad Liar","artist":"Selena Gomez","year":"2017","id":"s374","players":1},{"game":"JD2018","title":"Beep Beep I'm a Sheep","artist":"LilDeuceDeuce featuring BlackGryph0n and TomSka","year":"2017","id":"s375","players":1},{"game":"JD2018","title":"Blow Your Mind (Mwah)","artist":"Dua Lipa","year":"2016","id":"s376","players":1},{"game":"JD2018","title":"Blue (Da Ba Dee)","artist":"Hit the Electro Beat","year":"1998","id":"s377","players":1},{"game":"JD2018","title":"Boom Boom","artist":"Iggy Azalea featuring Zedd","year":"2017","id":"s378","players":3},{"game":"JD2018","title":"Bubble Pop!","artist":"Hyuna","year":"2011","id":"s379","players":3},{"game":"JD2018","title":"Carmen (Ouverture)","artist":"Just Dance Orchestra","year":"1875","id":"s380","players":2},{"game":"JD2018","title":"Chantaje","artist":"Shakira featuring Maluma","year":"2016","id":"s381","players":2,"adult":true},{"game":"JD2018","title":"Daddy Cool","artist":"Groove Century","year":"1976","id":"s382","players":1},{"game":"JD2018","title":"Despacito","artist":"Luis Fonsi featuring Daddy Yankee","year":"2017","id":"s383","players":4},{"game":"JD2018","title":"Dharma","artist":"Headhunterz and Kshmr","year":"2016","id":"s384","players":1},{"game":"JD2018","title":"Diggy","artist":"Spencer Ludwig","year":"2016","id":"s385","players":1},{"game":"JD2018","title":"Fight Club","artist":"Lights","year":"2017","id":"s386","players":1},{"game":"JD2018","title":"Footloose","artist":"Top Culture","year":"1984","id":"s387","players":1},{"game":"JD2018","title":"Got That","artist":"Gigi Rowe","year":"2017","id":"s388","players":1},{"game":"JD2018","title":"How Far I'll Go","artist":"Disney's Moana","year":"2016","id":"s389","players":1},{"game":"JD2018","title":"In the Hall of the Pixel King","artist":"Dancing Bros.","year":"2017","id":"s390","players":1},{"game":"JD2018","title":"Instruction","artist":"Jax Jones featuring Demi Lovato and Stefflon Don","year":"2017","id":"s391","players":1},{"game":"JD2018","title":"Itsy Bitsy Teenie Weenie Yellow Polkadot Bikini","artist":"The Sunlight Shakers","year":"1960","id":"s392","players":2},{"game":"JD2018","title":"John Wayne","artist":"Lady Gaga","year":"2017","id":"s393","players":1},{"game":"JD2018","title":"Keep On Moving","artist":"Michelle Delamor","year":"2017","id":"s394","players":1},{"game":"JD2018","title":"Kissing Strangers","artist":"DNCE featuring Nicki Minaj","year":"2017","id":"s395","players":2},{"game":"JD2018","title":"Love Ward","artist":"Hatsune Miku","year":"2009","id":"s396","players":3},{"game":"JD2018","title":"Make It Jingle","artist":"Big Freedia","year":"2016","id":"s397","players":1},{"game":"JD2018","title":"Naughty Girl","artist":"Beyoncé","year":"2004","id":"s398","players":1,"adult":true},{"game":"JD2018","title":"New Face","artist":"Psy","year":"2017","id":"s399","players":3},{"game":"JD2018","title":"Risky Business","artist":"Jorge Blanco","year":"2017","id":"s400","players":1},{"game":"JD2018","title":"Rockabye","artist":"Clean Bandit featuring Sean Paul and Anne-Marie","year":"2016","id":"s401","players":2},{"game":"JD2018","title":"Sayonara","artist":"Wanko Ni Mero Mero","year":"2017","id":"s402","players":1},{"game":"JD2018","title":"Shape of You","artist":"Ed Sheeran","year":"2017","id":"s403","players":1},{"game":"JD2018","title":"Side to Side","artist":"Ariana Grande featuring Nicki Minaj","year":"2016","id":"s404","players":1,"adult":true},{"game":"JD2018","title":"Slumber Party","artist":"Britney Spears featuring Tinashe","year":"2016","id":"s405","players":4},{"game":"JD2018","title":"Sugar Dance","artist":"The Just Dance Band","year":"2017","id":"s406","players":1},{"game":"JD2018","title":"Swish Swish","artist":"Katy Perry featuring Nicki Minaj","year":"2017","id":"s407","players":4},{"game":"JD2018","title":"The Way I Are (Dance with Somebody)","artist":"Bebe Rexha featuring Lil Wayne","year":"2017","id":"s408","players":2},{"game":"JD2018","title":"Tumbum","artist":"Yemi Alade","year":"2016","id":"s409","players":4},{"game":"JD2018","title":"Waka Waka (This Time for Africa)","artist":"Shakira","year":"2010","id":"s410","players":3},{"game":"JD2019","title":"A Little Party Never Killed Nobody (All We Got)","artist":"Fergie featuring Q-Tip and GoonRock","year":"2013","id":"s411","players":1},{"game":"JD2019","title":"Adeyyo","artist":"Ece Seçkin","year":"2016","id":"s412","players":1},{"game":"JD2019","title":"Bang Bang Bang","artist":"Big Bang","year":"2015","id":"s413","players":3},{"game":"JD2019","title":"Bum Bum Tam Tam","artist":"MC Fioti , Future , J Balvin , Stefflon Don and Juan Magan","year":"2017","id":"s414","players":2,"adult":true},{"game":"JD2019","title":"Ça Plane Pour Moi","artist":"Bob Platine","year":"1977","id":"s415","players":1},{"game":"JD2019","title":"Calypso","artist":"Luis Fonsi featuring Stefflon Don","year":"2018","id":"s416","players":1,"adult":true},{"game":"JD2019","title":"Ddu-Du Ddu-Du","artist":"Blackpink","year":"2018","id":"s417","players":4},{"game":"JD2019","title":"Familiar","artist":"Liam Payne and J Balvin","year":"2018","id":"s418","players":1},{"game":"JD2019","title":"Finesse (Remix)","artist":"Bruno Mars featuring Cardi B","year":"2018","id":"s419","players":4},{"game":"JD2019","title":"Fire","artist":"LLP featuring Mike Diamondz","year":"2015","id":"s420","players":2},{"game":"JD2019","title":"Fire on the Dancefloor","artist":"Michelle Delamor","year":"2018","id":"s421","players":1},{"game":"JD2019","title":"Havana","artist":"Camila Cabello","year":"2017","id":"s422","players":1},{"game":"JD2019","title":"I Feel It Coming","artist":"The Weeknd featuring Daft Punk","year":"2016","id":"s423","players":1},{"game":"JD2019","title":"I'm Still Standing","artist":"Top Culture","year":"1983","id":"s424","players":1},{"game":"JD2019","title":"Mad Love","artist":"Sean Paul and David Guetta featuring Becky G","year":"2018","id":"s425","players":2},{"game":"JD2019","title":"Make Me Feel","artist":"Janelle Monáe","year":"2018","id":"s426","players":1},{"game":"JD2019","title":"Mama Mia","artist":"Mayra Verónica","year":"2013","id":"s427","players":2},{"game":"JD2019","title":"Mi Mi Mi","artist":"Hit The Electro Beat","year":"2013","id":"s428","players":2},{"game":"JD2019","title":"Miłość w Zakopanem","artist":"Sławomir","year":"2017","id":"s429","players":1},{"game":"JD2019","title":"Narco","artist":"Blasterjaxx and Timmy Trumpet","year":"2017","id":"s430","players":1},{"game":"JD2019","title":"New Reality","artist":"Gigi Rowe","year":"2018","id":"s431","players":1},{"game":"JD2019","title":"New Rules","artist":"Dua Lipa","year":"2017","id":"s432","players":1},{"game":"JD2019","title":"New World","artist":"Krewella and Yellow Claw featuring Vava","year":"2018","id":"s433","players":1},{"game":"JD2019","title":"No Tears Left to Cry","artist":"Ariana Grande","year":"2018","id":"s434","players":1},{"game":"JD2019","title":"Not Your Ordinary","artist":"Stella Mwangi","year":"2017","id":"s435","players":4},{"game":"JD2019","title":"Obsesión","artist":"Aventura","year":"2002","id":"s436","players":2},{"game":"JD2019","title":"OMG","artist":"Arash featuring Snoop Dogg","year":"2016","id":"s437","players":3},{"game":"JD2019","title":"One Kiss","artist":"Calvin Harris and Dua Lipa","year":"2018","id":"s438","players":1},{"game":"JD2019","title":"Pac-Man","artist":"Dancing Bros.","year":"1980","id":"s439","players":4},{"game":"JD2019","title":"Rave in the Grave","artist":"AronChupa featuring Little Sis Nora","year":"2018","id":"s440","players":4},{"game":"JD2019","title":"The Rhythm of the Night","artist":"Ultraclub 90","year":"1993","id":"s441","players":1},{"game":"JD2019","title":"Sangria Wine","artist":"Pharrell Williams and Camila Cabello","year":"2018","id":"s442","players":1},{"game":"JD2019","title":"Shaky Shaky","artist":"Daddy Yankee","year":"2016","id":"s443","players":1,"adult":true},{"game":"JD2019","title":"Sugar","artist":"Maroon 5","year":"2015","id":"s444","players":2},{"game":"JD2019","title":"Sweet Little Unforgettable Thing","artist":"Bea Miller","year":"2018","id":"s445","players":1},{"game":"JD2019","title":"Sweet Sensation","artist":"Flo Rida","year":"2018","id":"s446","players":4},{"game":"JD2019","title":"Toy","artist":"Netta","year":"2018","id":"s447","players":1},{"game":"JD2019","title":"Un Poco Loco","artist":"Disney-Pixar's Coco","year":"2017","id":"s448","players":1},{"game":"JD2019","title":"Water Me","artist":"Lizzo","year":"2017","id":"s449","players":1},{"game":"JD2019","title":"Where Are You Now?","artist":"Lady Leshurr featuring Wiley","year":"2016","id":"s450","players":3},{"game":"JD2019","title":"Work Work","artist":"Britney Spears","year":"2013","id":"s451","players":1},{"game":"JD2020","title":"365","artist":"Zedd and Katy Perry","year":"2019","id":"s452","players":1},{"game":"JD2020","title":"7 Rings","artist":"Ariana Grande","year":"2019","id":"s453","players":3},{"game":"JD2020","title":"Always Look on the Bright Side of Life","artist":"The Frankie Bostello Orchestra","year":"1979","id":"s454","players":4},{"game":"JD2020","title":"Baby Shark","artist":"Pinkfong","year":"2015","id":"s455","players":2},{"game":"JD2020","title":"Bad Boy","artist":"Riton and Kah-Lo","year":"2018","id":"s456","players":2},{"game":"JD2020","title":"Bad Guy","artist":"Billie Eilish","year":"2019","id":"s457","players":1},{"game":"JD2020","title":"Bangarang","artist":"Skrillex featuring Sirah","year":"2012","id":"s458","players":1},{"game":"JD2020","title":"Bassa Sababa","artist":"Netta","year":"2019","id":"s459","players":1},{"game":"JD2020","title":"Con Altura","artist":"Rosalía and J Balvin featuring El Guincho","year":"2019","id":"s460","players":1},{"game":"JD2020","title":"Con Calma","artist":"Daddy Yankee featuring Snow","year":"2019","id":"s461","players":2,"adult":true},{"game":"JD2020","title":"Everybody (Backstreet's Back)","artist":"Millennium Alert","year":"1997","id":"s462","players":4},{"game":"JD2020","title":"Fancy","artist":"Twice","year":"2019","id":"s463","players":3},{"game":"JD2020","title":"Fancy Footwork","artist":"Chromeo","year":"2007","id":"s464","players":1},{"game":"JD2020","title":"Fit but You Know It","artist":"The Streets","year":"2004","id":"s465","players":1},{"game":"JD2020","title":"Get Busy","artist":"Koyotie","year":"2019","id":"s466","players":2},{"game":"JD2020","title":"God Is a Woman","artist":"Ariana Grande","year":"2018","id":"s467","players":1},{"game":"JD2020","title":"High Hopes","artist":"Panic! at the Disco","year":"2018","id":"s468","players":4},{"game":"JD2020","title":"I Am the Best","artist":"2NE1","year":"2011","id":"s469","players":3},{"game":"JD2020","title":"I Don't Care","artist":"Ed Sheeran and Justin Bieber","year":"2019","id":"s470","players":1},{"game":"JD2020","title":"I Like It","artist":"Cardi B , Bad Bunny and J Balvin","year":"2018","id":"s471","players":3,"adult":true},{"game":"JD2020","title":"Infernal Gallop (Can-Can)","artist":"The Just Dance Orchestra","year":"1858","id":"s472","players":2},{"game":"JD2020","title":"Into the Unknown","artist":"Idina Menzel featuring Aurora","year":"2019","id":"s473","players":1},{"game":"JD2020","title":"Just an Illusion","artist":"Equinox Stars","year":"1982","id":"s474","players":2},{"game":"JD2020","title":"Keep in Touch","artist":"JD McCrary","year":"2019","id":"s475","players":1},{"game":"JD2020","title":"Kill This Love","artist":"Blackpink","year":"2019","id":"s476","players":4},{"game":"JD2020","title":"Le Bal Masqué","artist":"Dr. Creole","year":"1984","id":"s477","players":4},{"game":"JD2020","title":"Ma Itù","artist":"Stella Mwangi","year":"2019","id":"s478","players":1},{"game":"JD2020","title":"My New Swag","artist":"Vava featuring Ty. and Nina Wang","year":"2017","id":"s479","players":1},{"game":"JD2020","title":"Old Town Road (Remix)","artist":"Lil Nas X featuring Billy Ray Cyrus","year":"2019","id":"s480","players":1},{"game":"JD2020","title":"Policeman","artist":"Eva Simons featuring Konshens","year":"2015","id":"s481","players":3},{"game":"JD2020","title":"Rain Over Me","artist":"Pitbull featuring Marc Anthony","year":"2011","id":"s482","players":1},{"game":"JD2020","title":"Skibidi","artist":"Little Big","year":"2018","id":"s483","players":2},{"game":"JD2020","title":"Só Depois do Carnaval","artist":"Lexa","year":"2019","id":"s484","players":1},{"game":"JD2020","title":"Soy Yo","artist":"Bomba Estéreo","year":"2015","id":"s485","players":1},{"game":"JD2020","title":"Stop Movin'","artist":"Royal Republic","year":"2019","id":"s486","players":3},{"game":"JD2020","title":"Sushi","artist":"Merk & Kremont","year":"2018","id":"s487","players":1},{"game":"JD2020","title":"Taki Taki","artist":"DJ Snake featuring Selena Gomez , Ozuna and Cardi B","year":"2018","id":"s488","players":1,"adult":true},{"game":"JD2020","title":"Talk","artist":"Khalid","year":"2019","id":"s489","players":1},{"game":"JD2020","title":"Tel Aviv","artist":"Omer Adam featuring Arisa","year":"2013","id":"s490","players":3},{"game":"JD2020","title":"The Time (Dirty Bit)","artist":"The Black Eyed Peas","year":"2010","id":"s491","players":4},{"game":"JD2020","title":"Ugly Beauty","artist":"Jolin Tsai","year":"2018","id":"s492","players":3},{"game":"JD2020","title":"Vodovorot","artist":"XS Project","year":"2011","id":"s493","players":1}]</script>
+<script>
+(() => {
+  "use strict";
+
+  const GAMES = JSON.parse(document.getElementById('gamesData').textContent);
+  const SONGS = JSON.parse(document.getElementById('songsData').textContent);
+  const GMAP = Object.fromEntries(GAMES.map(g => [g.id, g]));
+  const SMAP = Object.fromEntries(SONGS.map(s => [s.id, s]));
+  const GAME_ORDER = GAMES.map(g => g.id);
+  const LS = 'jd-stanowisko-v1';
+
+  const $  = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const norm = s => String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').replace(/ø/g,'o').replace(/ß/g,'ss');
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
+  const fmt = sec => {
+    sec = Math.max(0, Math.floor(sec));
+    return String(Math.floor(sec/60)).padStart(2,'0') + ':' + String(sec%60).padStart(2,'0');
+  };
+  const songOf = id => SMAP[id] || null;
+  const gameOf = id => (SMAP[id] ? SMAP[id].game : null);
+  const gameName = gid => (GMAP[gid] ? GMAP[gid].full : gid);
+  const gameShort = gid => (GMAP[gid] ? GMAP[gid].short : gid);
+  const gameBadge = gid => {
+    const g = GMAP[gid];
+    if (!g) return '';
+    return '<span class="gbadge" style="--gc:' + g.color + '">' + esc(g.short) + '</span>';
+  };
+  const dateStr = ts => new Date(ts).toLocaleDateString('pl-PL');
+  const timeStr = ts => new Date(ts).toLocaleTimeString('pl-PL', {hour:'2-digit', minute:'2-digit'});
+  const normalizeMembers = m => {
+    if (Array.isArray(m)) return m.map(x => String(x).trim()).filter(Boolean);
+    if (typeof m === 'string' && m.trim()) return m.split(',').map(x => x.trim()).filter(Boolean);
+    return [];
+  };
+
+  // ---------- state ----------
+  const defaultState = () => ({
+    event: 'Andrzejki',
+    slot: 5,
+    todayGames: ['JD2019', 'JD2020'],
+    hidden: [],
+    queue: [],
+    current: null,
+    history: [],
+    filterPlayers: 'all',
+    familyOnly: false,
+    adultOverrides: {},
+    theme: 'light'
+  });
+
+  function loadState() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(LS));
+      if (!raw) return defaultState();
+      const d = defaultState();
+      return {
+        ...d,
+        ...raw,
+        slot: Number(raw.slot) || d.slot,
+        todayGames: Array.isArray(raw.todayGames) ? raw.todayGames.filter(g => GMAP[g]) : d.todayGames,
+        hidden: Array.isArray(raw.hidden) ? raw.hidden.filter(id => SMAP[id]) : [],
+        queue: Array.isArray(raw.queue) ? raw.queue.filter(q => q && q.id && SMAP[q.songId]).map(q => ({ ...q, members: normalizeMembers(q.members) })) : [],
+        current: raw.current && SMAP[raw.current.songId] ? { ...raw.current, members: normalizeMembers(raw.current.members) } : null,
+        history: Array.isArray(raw.history) ? raw.history.filter(h => h && SMAP[h.songId]).map(h => ({ ...h, members: normalizeMembers(h.members) })) : [],
+        filterPlayers: ['all', '1', '2', '3', '4'].includes(String(raw.filterPlayers)) ? String(raw.filterPlayers) : 'all',
+        familyOnly: !!raw.familyOnly,
+        adultOverrides: raw.adultOverrides && typeof raw.adultOverrides === 'object' ? raw.adultOverrides : {},
+        theme: raw.theme === 'dark' ? 'dark' : 'light'
+      };
+    } catch (e) {
+      return defaultState();
+    }
+  }
+
+  let state = loadState();
+  const ui = {
+    tab: 'menu',
+    menuGame: 'ALL',
+    menuQuery: '',
+    todayOnly: false,
+    printMode: 'menu-version',
+    addSongIds: [],
+    addMembers: [],
+    addStars: 0
+  };
+
+  function save() {
+    try { localStorage.setItem(LS, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function applyTheme() {
+    document.documentElement.dataset.theme = state.theme === 'dark' ? 'dark' : 'light';
+  }
+
+  // ---------- toast ----------
+  let toastTimer = null;
+  function toast(msg, kind = '') {
+    const el = $('#toast');
+    el.textContent = msg;
+    el.className = 'toast show ' + kind;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.className = 'toast'; }, 3400);
+  }
+
+  // ---------- header / tabs ----------
+  function renderHeader() {
+    $('#eventLabel').textContent = (state.event || 'Andrzejki') + ' · stanowisko';
+    let today;
+    if (!state.todayGames.length) {
+      today = '<span class="hint">brak gier na dziś</span>';
+    } else if (state.todayGames.length <= 4) {
+      today = state.todayGames.map(g => gameBadge(g)).join(' ');
+    } else {
+      const names = state.todayGames.map(g => gameName(g)).join(', ');
+      today = '<span title="' + esc(names) + '">' + state.todayGames.length + ' gier</span>';
+    }
+    $('#todayLabel').innerHTML = '<span class="hint">Dziś:</span> ' + today;
+    document.title = (state.event || 'Andrzejki') + ' — Just Dance';
+  }
+
+  function renderTabs() {
+    const tabs = [
+      ['menu', 'Menu'],
+      ['queue', 'Kolejka'],
+      ['records', 'Rekordy'],
+      ['board', 'Tablica'],
+      ['print', 'Wydruk'],
+      ['settings', 'Ustawienia']
+    ];
+    $('#tabs').innerHTML = tabs.map(([id, label]) => {
+      let badge = '';
+      if (id === 'queue' && state.queue.length) badge = '<span class="badge">' + state.queue.length + '</span>';
+      if (id === 'records' && state.history.length) badge = '<span class="badge">' + state.history.length + '</span>';
+      return '<button class="tab ' + (ui.tab === id ? 'active' : '') + '" data-action="tab" data-tab="' + id + '">' + label + badge + '</button>';
+    }).join('');
+  }
+
+  // ---------- filters ----------
+  function adultOf(s) {
+    return Object.prototype.hasOwnProperty.call(state.adultOverrides, s.id)
+      ? !!state.adultOverrides[s.id]
+      : !!s.adult;
+  }
+  const playersLabel = s => s.players ? s.players + ' os.' : '? os.';
+  function matchesFilters(s) {
+    if (state.familyOnly && adultOf(s)) return false;
+    if (state.filterPlayers !== 'all' && String(s.players) !== state.filterPlayers) return false;
+    return true;
+  }
+
+  function syncFilterControls() {
+    const opts = [['all', 'Wszyscy'], ['1', '1 os.'], ['2', '2 os.'], ['3', '3 os.'], ['4', '4 os.']];
+    const html = opts.map(([v, label]) =>
+      '<button class="chip ' + (state.filterPlayers === v ? 'active' : '') + '" data-action="players" data-players="' + v + '">' + label + '</button>'
+    ).join('');
+    ['#playerChips', '#printPlayerChips'].forEach(sel => {
+      const el = $(sel);
+      if (el) el.innerHTML = html;
+    });
+    ['#familyOnly', '#printFamilyOnly'].forEach(sel => {
+      const el = $(sel);
+      if (el) el.checked = state.familyOnly;
+    });
+  }
+
+  function renderFilterNote() {
+    const visible = visibleSongs();
+    const adults = visible.filter(adultOf).length;
+    const unknown = visible.filter(s => !s.players).length;
+    $('#filterNote').textContent = 'Wrażliwe: ' + adults + ' · bez danych o graczach: ' + unknown;
+  }
+
+  // ---------- menu ----------
+  function visibleSongs() {
+    return SONGS.filter(s => !state.hidden.includes(s.id));
+  }
+
+  function menuList() {
+    const q = norm(ui.menuQuery);
+    return visibleSongs()
+      .filter(s => ui.menuGame === 'ALL' || s.game === ui.menuGame)
+      .filter(s => !ui.todayOnly || state.todayGames.includes(s.game))
+      .filter(matchesFilters)
+      .filter(s => !q || norm(s.title + ' ' + s.artist + ' ' + gameShort(s.game)).includes(q));
+  }
+
+  function renderMenuChips() {
+    const base = visibleSongs()
+      .filter(s => !ui.todayOnly || state.todayGames.includes(s.game))
+      .filter(matchesFilters);
+    const counts = {};
+    base.forEach(s => { counts[s.game] = (counts[s.game] || 0) + 1; });
+    const total = base.length;
+    let html = '<button class="chip ' + (ui.menuGame === 'ALL' ? 'active' : '') + '" data-action="menu-game" data-game="ALL">Wszystkie <b>' + total + '</b></button>';
+    html += GAMES.map(g => {
+      const n = counts[g.id] || 0;
+      if (!n) return '';
+      return '<button class="chip ' + (ui.menuGame === g.id ? 'active' : '') + '" data-action="menu-game" data-game="' + g.id + '">' + esc(g.short) + ' <b>' + n + '</b></button>';
+    }).join('');
+    $('#gameChips').innerHTML = html;
+  }
+
+  function renderSongList() {
+    const list = menuList();
+    const bits = [list.length + ' piosenek'];
+    if (ui.todayOnly) bits.push('tylko gry na dziś');
+    if (state.filterPlayers !== 'all') bits.push(state.filterPlayers + ' os.');
+    if (state.familyOnly) bits.push('bez wrażliwych');
+    if (state.hidden.length) bits.push('ukryte: ' + state.hidden.length);
+    if (state.filterPlayers !== 'all') {
+      const unknown = visibleSongs().filter(s => !s.players).length;
+      if (unknown) bits.push(unknown + ' bez danych o graczach pominięto');
+    }
+    $('#menuCount').textContent = bits.join(' · ');
+
+    if (!list.length) {
+      $('#songList').innerHTML = '<div class="empty"><strong>Brak wyników</strong>Spróbuj innej frazy albo zmień filtr gry lub graczy.<div style="margin-top:14px"><button class="btn ghost" data-action="clear-filters">Wyczyść filtry</button></div></div>';
+      return;
+    }
+
+    $('#songList').innerHTML = list.map(s => {
+      const adult = adultOf(s);
+      return (
+        '<div class="song">' +
+          '<div class="song-main">' +
+            '<div class="song-title">' + esc(s.title) + '</div>' +
+            '<div class="song-sub">' + esc(s.artist) + (s.year ? ' · ' + esc(s.year) : '') + '</div>' +
+          '</div>' +
+          '<div class="song-badge">' +
+            gameBadge(s.game) +
+            '<span class="pbadge' + (s.players ? '' : ' unknown') + '">' + playersLabel(s) + '</span>' +
+            (adult ? '<span class="tag flag" title="Oznaczona jako wrażliwa choreografia">wrażliwe</span>' : '') +
+          '</div>' +
+          '<div class="song-actions">' +
+            '<button class="btn tiny primary" data-action="add-song" data-song="' + s.id + '">＋ Kolejka</button>' +
+            '<button class="icon' + (adult ? ' on' : '') + '" title="Oznacz / odznacz jako wrażliwe" data-action="toggle-adult" data-song="' + s.id + '">⚑</button>' +
+            '<button class="icon" title="Ukryj piosenkę" data-action="hide-song" data-song="' + s.id + '">✕</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function renderMenu() {
+    const search = $('#menuSearch');
+    if (document.activeElement !== search) search.value = ui.menuQuery;
+    $('#todayOnly').checked = ui.todayOnly;
+    syncFilterControls();
+    renderFilterNote();
+    renderMenuChips();
+    renderSongList();
+  }
+
+  // ---------- queue ----------
+  function switchInfo() {
+    let last = state.current ? gameOf(state.current.songId) : null;
+    let switches = 0;
+    const flags = {};
+    for (const q of state.queue) {
+      const g = gameOf(q.songId);
+      const sw = !!(last && g !== last);
+      flags[q.id] = sw;
+      if (sw) switches++;
+      last = g;
+    }
+    return { flags, switches };
+  }
+
+  function renderQueue() {
+    const cur = state.current;
+    const curSong = cur ? songOf(cur.songId) : null;
+    const curMembers = cur ? normalizeMembers(cur.members) : [];
+    const { flags, switches } = switchInfo();
+
+    let hint = '4 piloty = maks. 4 osoby. Jedna piosenka i zmiana — tak jest sprawiedliwie.';
+    if (switches > 0) hint += ' W kolejce ' + switches + ' zmiana/y gry — pogrupuj występy z tej samej wersji, żeby mniej przełączać.';
+    $('#queueHint').textContent = hint;
+
+    let html = '';
+
+    if (cur && curSong) {
+      const slot = Math.max(1, Number(state.slot) || 5) * 60;
+      const elapsed = Math.floor((Date.now() - (cur.startedAt || Date.now())) / 1000);
+      const over = elapsed > slot;
+      html +=
+        '<div class="panel now ' + (over ? 'over' : '') + '">' +
+          '<div class="now-label">TERAZ GRA</div>' +
+          '<div class="now-main">' +
+            '<div>' +
+              '<div class="now-team">' + esc(cur.team) + '</div>' +
+              '<div class="now-song">' + esc(curSong.title) + '</div>' +
+              '<div class="song-sub">' + esc(curSong.artist) + ' ' + gameBadge(curSong.game) +
+                ' <span class="pbadge' + (curSong.players ? '' : ' unknown') + '">' + playersLabel(curSong) + '</span>' +
+                (adultOf(curSong) ? ' <span class="tag flag">wrażliwe</span>' : '') +
+              '</div>' +
+              (curMembers.length ? '<div class="member-list now-members">' + curMembers.map(m => '<span class="member">' + esc(m) + '</span>').join('') + '</div>' : '') +
+            '</div>' +
+            '<div class="timer">' +
+              '<div class="timer-text" id="timerText">' + fmt(elapsed) + '</div>' +
+              '<div class="timer-bar"><i id="timerBar" style="width:' + Math.min(100, elapsed / slot * 100) + '%"></i></div>' +
+              '<div class="timer-hint" id="timerHint">' + (over ? '+' + fmt(elapsed - slot) + ' po czasie' : 'pozostało ' + fmt(slot - elapsed)) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="row" style="margin-top:14px">' +
+            '<button class="btn primary" data-action="finish">Zakończ i wpisz wynik</button>' +
+            '<button class="btn ghost" data-action="cancel-current">Anuluj występ</button>' +
+          '</div>' +
+        '</div>';
+    } else {
+      html +=
+        '<div class="empty" style="margin-bottom:14px">' +
+          '<strong>Stanowisko wolne</strong>' +
+          (state.queue.length ? 'Możesz zacząć pierwszą drużynę z kolejki.' : 'Dodaj pierwszy występ, żeby zacząć.') +
+          (state.queue.length ? '<div style="margin-top:14px"><button class="btn primary" data-action="start" data-id="' + state.queue[0].id + '">▶ Start następnego</button></div>' : '') +
+        '</div>';
+    }
+
+    if (state.queue.length) {
+      html += '<h3 class="q-title">Następni <span class="hint">(' + state.queue.length + ')</span></h3><div class="q-list">';
+      html += state.queue.map((q, i) => {
+        const s = songOf(q.songId);
+        const qMembers = normalizeMembers(q.members);
+        const notToday = !state.todayGames.includes(s.game);
+        const tags = [];
+        if (flags[q.id]) tags.push('<span class="tag warn">zmiana gry</span>');
+        if (notToday) tags.push('<span class="tag bad">poza listą na dziś</span>');
+        return (
+          '<div class="q-item ' + (i === 0 ? 'next' : '') + '">' +
+            '<div class="q-pos">' + (i + 1) + '</div>' +
+            '<div class="q-main">' +
+              '<div class="q-team">' + esc(q.team) + '</div>' +
+              '<div class="q-song">' + esc(s.title) + ' <span class="hint">· ' + esc(s.artist) + '</span></div>' +
+              '<div class="q-meta">' + gameBadge(s.game) +
+                '<span class="pbadge' + (s.players ? '' : ' unknown') + '">' + playersLabel(s) + '</span>' +
+                (adultOf(s) ? '<span class="tag flag">wrażliwe</span>' : '') +
+                (qMembers.length ? '<span class="member-list">' + qMembers.map(m => '<span class="member">' + esc(m) + '</span>').join('') + '</span>' : '') +
+                tags.join('') +
+              '</div>' +
+            '</div>' +
+            '<div class="q-actions">' +
+              '<button class="btn tiny primary" data-action="start" data-id="' + q.id + '" ' + (cur ? 'disabled' : '') + '>▶ Start</button>' +
+              '<button class="icon" title="W górę" data-action="q-up" data-id="' + q.id + '">↑</button>' +
+              '<button class="icon" title="W dół" data-action="q-down" data-id="' + q.id + '">↓</button>' +
+              '<button class="icon danger" title="Usuń" data-action="q-del" data-id="' + q.id + '">✕</button>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+      html += '</div>';
+    } else if (cur) {
+      html += '<div class="empty" style="margin-top:14px"><strong>Kolejka pusta</strong>Dodaj następny występ, żeby nie było przestoju.</div>';
+    }
+
+    $('#queueBody').innerHTML = html;
+  }
+
+  // ---------- records ----------
+  function bestRecords() {
+    const best = new Map();
+    for (const h of state.history) {
+      if (h.score === null || h.score === undefined || h.score === '') continue;
+      const prev = best.get(h.songId);
+      if (!prev || Number(h.score) > Number(prev.score)) best.set(h.songId, h);
+    }
+    return best;
+  }
+
+  function renderRecords() {
+    const scored = state.history.filter(h => h.score !== null && h.score !== undefined && h.score !== '');
+    const teams = new Set(state.history.map(h => h.team));
+    const recs = bestRecords();
+
+    $('#recordsHint').textContent = scored.length + ' wyników · ' + teams.size + ' drużyn · ' + recs.size + ' piosenek z rekordem';
+
+    if (!state.history.length) {
+      $('#recordsBody').innerHTML = '<div class="empty"><strong>Jeszcze nic nie zagrane</strong>Wpisz pierwszy wynik po występie — rekordy pojawią się tutaj.</div>';
+      return;
+    }
+
+    let html = '';
+    const top = scored.slice().sort((a, b) => Number(b.score) - Number(a.score)).slice(0, 10);
+    if (top.length) {
+      html += '<div class="panel"><h3>Top 10 wieczoru</h3><p class="hint" style="margin:4px 0 8px">Różne piosenki mają różne maksimum — to bardziej zabawa niż ranking.</p><div class="top-list">';
+      html += top.map(h => {
+        const s = songOf(h.songId);
+        return '<div class="top-item">' +
+          '<div><div class="rec-title">' + esc(h.team) + '</div><div class="rec-sub">' + esc(s.title) + ' · ' + esc(gameShort(s.game)) + '</div></div>' +
+          '<div class="top-score">' + Number(h.score).toLocaleString('pl-PL') + '</div>' +
+        '</div>';
+      }).join('');
+      html += '</div></div>';
+    }
+
+    const rows = Array.from(recs.values()).sort((a, b) => {
+      const sa = songOf(a.songId), sb = songOf(b.songId);
+      return (GAME_ORDER.indexOf(sa.game) - GAME_ORDER.indexOf(sb.game)) || sa.title.localeCompare(sb.title, 'pl');
+    });
+
+    html += '<div class="panel"><h3>Rekordy piosenek</h3><p class="hint" style="margin:4px 0 8px">Najlepszy wynik na danej piosence. Pobij rekord — to główna mechanika stanowiska.</p>';
+    html += rows.map(h => {
+      const s = songOf(h.songId);
+      const stars = h.stars ? ' · ' + '★'.repeat(Number(h.stars)) : '';
+      return '<div class="rec">' +
+        '<div><div class="rec-title">' + esc(s.title) + ' ' + gameBadge(s.game) + '</div><div class="rec-sub">' + esc(s.artist) + ' · ' + esc(h.team) + stars + '</div></div>' +
+        '<div class="rec-score"><b>' + Number(h.score).toLocaleString('pl-PL') + '</b><span>' + timeStr(h.at) + '</span></div>' +
+      '</div>';
+    }).join('');
+    html += '</div>';
+
+    $('#recordsBody').innerHTML = html;
+  }
+
+  // ---------- board ----------
+  function renderBoard() {
+    const cur = state.current;
+    const curSong = cur ? songOf(cur.songId) : null;
+    const recs = bestRecords();
+    let top = null;
+    for (const h of recs.values()) {
+      if (!top || Number(h.score) > Number(top.score)) top = h;
+    }
+
+    let html = '';
+    if (cur && curSong) {
+      const elapsed = Math.floor((Date.now() - (cur.startedAt || Date.now())) / 1000);
+      html +=
+        '<div class="board-now">' +
+          '<div class="board-kicker">TERAZ GRA</div>' +
+          '<div class="board-team">' + esc(cur.team) + '</div>' +
+          '<div class="board-song">' + esc(curSong.title) + '</div>' +
+          '<div class="board-meta">' +
+            '<span>' + esc(curSong.artist) + '</span>' +
+            gameBadge(curSong.game) +
+            '<span class="board-timer" id="boardTimer">' + fmt(elapsed) + '</span>' +
+          '</div>' +
+        '</div>';
+    } else {
+      html +=
+        '<div class="board-free">' +
+          '<div class="big">WOLNE STANOWISKO</div>' +
+          '<div class="sub">Kto następny? Zapraszamy do tańca.</div>' +
+        '</div>';
+    }
+
+    if (state.queue.length) {
+      html += '<div class="board-next">';
+      html += state.queue.slice(0, 3).map((q, i) => {
+        const s = songOf(q.songId);
+        return '<div class="panel"><div class="hint">' + (i === 0 ? 'NASTĘPNY' : 'W KOLEJCE') + '</div>' +
+          '<div class="n-team">' + esc(q.team) + '</div>' +
+          '<div class="n-song">' + esc(s.title) + ' · ' + esc(gameShort(s.game)) + '</div></div>';
+      }).join('');
+      html += '</div>';
+    }
+
+    if (top) {
+      const s = songOf(top.songId);
+      html += '<div class="panel board-record"><div class="hint">REKORD WIECZORU</div>' +
+        '<div class="big">' + Number(top.score).toLocaleString('pl-PL') + '</div>' +
+        '<div class="hint">' + esc(top.team) + ' · ' + esc(s.title) + '</div></div>';
+    }
+
+    $('#boardBody').innerHTML = html;
+  }
+
+  // ---------- print ----------
+  function printSongRow(s, showGame) {
+    const tag = showGame ? esc(gameShort(s.game)) : playersLabel(s);
+    const flag = (!state.familyOnly && adultOf(s)) ? ' <b class="ps-flag">⚑</b>' : '';
+    return '<div class="print-song"><div class="ps-row">' +
+      '<span class="ps-title"><b>' + esc(s.title) + '</b> <span class="ps-artist">— ' + esc(s.artist) + '</span></span>' +
+      '<span class="ps-tag">' + tag + flag + '</span>' +
+    '</div></div>';
+  }
+
+  function printMenuHTML(group) {
+    const games = state.todayGames.length ? state.todayGames : GAME_ORDER;
+    const pool = SONGS.filter(s => !state.hidden.includes(s.id) && matchesFilters(s) && games.includes(s.game));
+    let html = '<h2>Menu piosenek — ' + (group === 'players' ? 'wg liczby osób' : 'wg wersji') + '</h2>';
+
+    if (!pool.length) {
+      html += '<p>Brak piosenek dla tych filtrów.</p>';
+    } else if (group === 'players') {
+      const groups = [[1, '1 osoba'], [2, '2 osoby'], [3, '3 osoby'], [4, '4 osoby'], [null, 'brak danych']];
+      groups.forEach(([n, label]) => {
+        const list = pool.filter(s => n === null ? !s.players : s.players === n)
+          .sort((a, b) => a.title.localeCompare(b.title, 'pl'));
+        if (!list.length) return;
+        html += '<h3>' + label + ' <span class="n">(' + list.length + ')</span></h3>';
+        html += '<div class="print-cols">' + list.map(s => printSongRow(s, true)).join('') + '</div>';
+      });
+    } else {
+      games.forEach(gid => {
+        const list = pool.filter(s => s.game === gid)
+          .sort((a, b) => a.title.localeCompare(b.title, 'pl'));
+        if (!list.length) return;
+        html += '<h3>' + esc(gameName(gid)) + ' <span class="n">(' + list.length + ')</span></h3>';
+        html += '<div class="print-cols">' + list.map(s => printSongRow(s, false)).join('') + '</div>';
+      });
+    }
+
+    const filters = [];
+    if (state.filterPlayers !== 'all') filters.push(state.filterPlayers + ' os.');
+    if (state.familyOnly) filters.push('bez wrażliwych');
+    html += '<p class="note">4 piloty = maks. 4 osoby na rundę. Jedna piosenka i zmiana.' +
+      (filters.length ? ' Filtr: ' + filters.join(' · ') + '.' : '') +
+      (!state.familyOnly ? ' ⚑ = wrażliwa choreografia.' : '') +
+      ' Lista obejmuje podstawowy soundtrack; kilka utworów regionalnych/DLC może nie być w ISO.</p>';
+    return html;
+  }
+
+  function printQueueHTML() {
+    let html = '<h2>Kolejka</h2>';
+    if (!state.queue.length && !state.current) {
+      html += '<p>Kolejka pusta.</p>';
+      return html;
+    }
+    html += '<table class="print-table"><thead><tr><th>#</th><th>Drużyna</th><th>Skład</th><th>Piosenka</th><th>Gra</th></tr></thead><tbody>';
+    if (state.current) {
+      const s = songOf(state.current.songId);
+      html += '<tr><td>teraz</td><td><b>' + esc(state.current.team) + '</b></td><td>' + esc(normalizeMembers(state.current.members).join(', ')) + '</td><td>' + esc(s.title) + '</td><td>' + esc(gameShort(s.game)) + '</td></tr>';
+    }
+    state.queue.forEach((q, i) => {
+      const s = songOf(q.songId);
+      html += '<tr><td>' + (i + 1) + '</td><td><b>' + esc(q.team) + '</b></td><td>' + esc(normalizeMembers(q.members).join(', ')) + '</td><td>' + esc(s.title) + '</td><td>' + esc(gameShort(s.game)) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    return html;
+  }
+
+  function printRecordsHTML() {
+    const recs = bestRecords();
+    let html = '<h2>Rekordy piosenek</h2>';
+    if (!recs.size) { html += '<p>Brak wyników.</p>'; return html; }
+    const rows = Array.from(recs.values()).sort((a, b) => {
+      const sa = songOf(a.songId), sb = songOf(b.songId);
+      return (GAME_ORDER.indexOf(sa.game) - GAME_ORDER.indexOf(sb.game)) || sa.title.localeCompare(sb.title, 'pl');
+    });
+    html += '<table class="print-table"><thead><tr><th>Piosenka</th><th>Gra</th><th>Drużyna</th><th>Punkty</th><th>★</th></tr></thead><tbody>';
+    rows.forEach(h => {
+      const s = songOf(h.songId);
+      html += '<tr><td><b>' + esc(s.title) + '</b><br><span style="color:#666">' + esc(s.artist) + '</span></td><td>' + esc(gameShort(s.game)) + '</td><td>' + esc(h.team) + '</td><td>' + Number(h.score).toLocaleString('pl-PL') + '</td><td>' + (h.stars || '') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    html += '<p class="note">Różne piosenki mają różne maksimum punktowe — rekordy liczone są osobno dla każdej piosenki.</p>';
+    return html;
+  }
+
+  function renderPrint() {
+    syncFilterControls();
+    $$('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === ui.printMode));
+    const f = [];
+    if (state.filterPlayers !== 'all') f.push(state.filterPlayers + ' os.');
+    if (state.familyOnly) f.push('bez wrażliwych');
+    const head =
+      '<div>' +
+        '<h1>' + esc(state.event || 'Andrzejki') + '</h1>' +
+        '<div class="meta">Just Dance · stanowisko · 4 piloty · ' + dateStr(Date.now()) +
+          (f.length ? ' · filtr: ' + f.join(' · ') : '') +
+        '</div>' +
+      '</div>';
+
+    let body = '';
+    if (ui.printMode === 'menu-people') {
+      body = printMenuHTML('players');
+    } else if (ui.printMode === 'menu-version') {
+      body = printMenuHTML('game');
+    } else if (ui.printMode === 'queue') {
+      body = printQueueHTML();
+    } else if (ui.printMode === 'records') {
+      body = printRecordsHTML();
+    } else {
+      body = printMenuHTML('game') + '<div class="page-break"></div>' + printQueueHTML() + '<div class="page-break"></div>' + printRecordsHTML();
+    }
+    $('#printSheet').innerHTML = head + body;
+  }
+
+  // ---------- settings ----------
+  function renderSettings() {
+    const ev = $('#setEvent');
+    if (document.activeElement !== ev) ev.value = state.event || '';
+    const sl = $('#setSlot');
+    if (document.activeElement !== sl) sl.value = state.slot;
+    $$('.theme-chip').forEach(b => b.classList.toggle('active', b.dataset.theme === state.theme));
+
+    $('#settingsGames').innerHTML = GAMES.map(g => {
+      const n = SONGS.filter(s => s.game === g.id && !state.hidden.includes(s.id)).length;
+      const on = state.todayGames.includes(g.id);
+      return '<button class="game-card ' + (on ? 'on' : '') + '" data-action="toggle-game" data-game="' + g.id + '">' +
+        '<span><span class="n">' + esc(g.full) + '</span><br><span class="c">' + n + ' piosenek · ' + g.year + '</span></span>' +
+        '<span class="gbadge" style="--gc:' + g.color + '">' + (on ? 'DZIŚ' : 'off') + '</span>' +
+      '</button>';
+    }).join('');
+
+    $('#hiddenCount').textContent = state.hidden.length
+      ? 'Ukryte: ' + state.hidden.length + ' piosenek. Nie pokazują się w menu ani w wyszukiwarce.'
+      : 'Nic nie jest ukryte.';
+    $('#hiddenList').innerHTML = state.hidden.map(id => {
+      const s = songOf(id);
+      if (!s) return '';
+      return '<div class="hidden-row"><span>' + esc(s.title) + ' <span class="hint">· ' + esc(gameShort(s.game)) + '</span></span>' +
+        '<button class="btn tiny ghost" data-action="unhide-song" data-song="' + id + '">Przywróć</button></div>';
+    }).join('');
+
+    const adults = visibleSongs().filter(adultOf);
+    $('#adultCount').textContent = adults.length
+      ? 'Oznaczone: ' + adults.length + ' utworów. Filtr „pomijaj wrażliwe” ukrywa je w menu i w wyszukiwarce.'
+      : 'Brak oznaczeń — filtr „pomijaj wrażliwe” nic nie ukrywa.';
+    $('#adultList').innerHTML = adults.map(s =>
+      '<div class="hidden-row"><span>' + esc(s.title) + ' <span class="hint">· ' + esc(gameShort(s.game)) + ' · ' + playersLabel(s) + '</span></span>' +
+      '<button class="btn tiny ghost" data-action="toggle-adult" data-song="' + s.id + '">Cofnij</button></div>'
+    ).join('');
+  }
+
+  // ---------- add dialog ----------
+  function renderMembersEditor() {
+    const box = $('#addMembers');
+    if (!box) return;
+    box.innerHTML = ui.addMembers.map((name, i) =>
+      '<div class="member-row">' +
+        '<input class="input" maxlength="30" placeholder="Osoba ' + (i + 1) + '" value="' + esc(name) + '" data-member-index="' + i + '">' +
+        '<button type="button" class="icon" data-action="remove-member" data-index="' + i + '" title="Usuń osobę">✕</button>' +
+      '</div>'
+    ).join('');
+  }
+
+  function renderAddSelected() {
+    const box = $('#addSelected');
+    const songs = ui.addSongIds.map(id => SMAP[id]).filter(Boolean);
+    if (!songs.length) {
+      box.innerHTML = '<div class="selected-empty">Nie wybrano piosenek — wyszukaj i kliknij. Możesz dodać kilka naraz.</div>';
+    } else {
+      box.innerHTML = songs.map(s =>
+        '<div class="selected-item">' +
+          '<div><div class="t">' + esc(s.title) + '</div>' +
+            '<div class="a">' + esc(s.artist) + ' · ' + playersLabel(s) + ' ' + gameBadge(s.game) +
+              (adultOf(s) ? ' <span class="tag flag">wrażliwe</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<button type="button" class="icon" data-action="clear-song" data-song="' + s.id + '" title="Usuń">✕</button>' +
+        '</div>'
+      ).join('');
+    }
+    const submit = $('#addSubmit');
+    if (submit) submit.textContent = songs.length ? 'Dodaj do kolejki (' + songs.length + ')' : 'Dodaj do kolejki';
+
+    const warns = [];
+    if (songs.length) {
+      const outside = songs.filter(s => !state.todayGames.includes(s.game)).length;
+      const adult = songs.filter(adultOf).length;
+      const mismatch = state.filterPlayers !== 'all' ? songs.filter(s => String(s.players) !== state.filterPlayers).length : 0;
+      if (outside) warns.push(outside + ' spoza listy na dziś');
+      if (adult) warns.push(adult + ' wrażliwych');
+      if (mismatch) warns.push(mismatch + ' na inną liczbę osób');
+    }
+    $('#addWarn').textContent = warns.length ? 'Uwaga: ' + warns.join(' · ') + '.' : '';
+  }
+
+  function renderAddResults(query) {
+    const q = norm(query);
+    let list;
+    if (!q) {
+      const pool = state.todayGames.length ? visibleSongs().filter(s => state.todayGames.includes(s.game)) : visibleSongs();
+      list = pool.slice(0, 10);
+    } else {
+      list = visibleSongs()
+        .filter(s => norm(s.title + ' ' + s.artist + ' ' + gameShort(s.game)).includes(q))
+        .slice(0, 12);
+    }
+    if (!list.length) {
+      $('#addResults').innerHTML = '<div class="hint" style="padding:8px">Brak wyników. Spróbuj krótszej frazy.</div>';
+      return;
+    }
+    $('#addResults').innerHTML = list.map(s => {
+      const selected = ui.addSongIds.includes(s.id);
+      return '<button type="button" class="result ' + (selected ? 'selected' : '') + '" data-action="pick-song" data-song="' + s.id + '">' +
+        '<span><span class="rt">' + esc(s.title) + '</span><br><span class="ra">' + esc(s.artist) + '</span></span>' +
+        '<span class="r-meta">' +
+          '<span class="pbadge' + (s.players ? '' : ' unknown') + '">' + playersLabel(s) + '</span>' +
+          (adultOf(s) ? '<span class="tag flag">wrażliwe</span>' : '') +
+          gameBadge(s.game) +
+          (selected ? '<span class="check">✓</span>' : '') +
+        '</span>' +
+      '</button>';
+    }).join('');
+  }
+
+  function openAdd(songId) {
+    ui.addSongIds = songId ? [songId] : [];
+    ui.addMembers = ['', '', '', ''];
+    const d = $('#addDialog');
+    $('#addTeam').value = 'Drużyna ' + (state.queue.length + (state.current ? 1 : 0) + 1);
+    $('#addSearch').value = '';
+    renderMembersEditor();
+    renderAddSelected();
+    renderAddResults('');
+    if (!d.open) d.showModal();
+    setTimeout(() => { const el = $('#addTeam'); el.focus(); el.select(); }, 60);
+  }
+
+  function closeAdd() {
+    const d = $('#addDialog');
+    if (d.open) d.close();
+    ui.addSongIds = [];
+    ui.addMembers = [];
+  }
+
+  // ---------- score dialog ----------
+  function renderStars() {
+    $$('#starButtons .star').forEach(b => {
+      b.classList.toggle('on', Number(b.dataset.stars) <= Number(ui.addStars || 0));
+    });
+  }
+
+  function openScore() {
+    if (!state.current) return;
+    const cur = state.current;
+    const s = songOf(cur.songId);
+    $('#scoreSummary').innerHTML =
+      '<div class="rec-title">' + esc(cur.team) + '</div>' +
+      '<div class="rec-sub">' + esc(s.title) + ' · ' + esc(s.artist) + ' ' + gameBadge(s.game) + '</div>';
+    $('#scoreInput').value = '';
+    ui.addStars = 0;
+    renderStars();
+    const d = $('#scoreDialog');
+    if (!d.open) d.showModal();
+    setTimeout(() => $('#scoreInput').focus(), 60);
+  }
+
+  function closeScore() {
+    const d = $('#scoreDialog');
+    if (d.open) d.close();
+  }
+
+  function saveScore(score) {
+    const cur = state.current;
+    if (!cur) return;
+    const s = songOf(cur.songId);
+    const prevBest = bestRecords().get(cur.songId);
+    const numeric = (score === null || score === undefined || score === '') ? null : Number(score);
+    if (numeric !== null && (!Number.isFinite(numeric) || numeric < 0)) {
+      toast('Wpisz poprawną liczbę punktów', 'bad');
+      return;
+    }
+    const entry = {
+      id: uid(),
+      team: cur.team,
+      members: normalizeMembers(cur.members),
+      songId: cur.songId,
+      score: numeric,
+      stars: numeric === null ? 0 : (Number(ui.addStars) || 0),
+      at: Date.now()
+    };
+    state.history.push(entry);
+    state.current = null;
+    save();
+    closeScore();
+    renderAll();
+    if (numeric !== null && (!prevBest || numeric > Number(prevBest.score))) {
+      toast('Nowy rekord piosenki: ' + numeric.toLocaleString('pl-PL') + ' — ' + s.title);
+    } else {
+      toast('Zapisano występ');
+    }
+  }
+
+  // ---------- actions ----------
+  function showTab(tab) {
+    ui.tab = tab;
+    document.body.dataset.tab = tab;
+    $$('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + tab));
+    renderTabs();
+    if (tab === 'menu') renderMenu();
+    if (tab === 'queue') renderQueue();
+    if (tab === 'records') renderRecords();
+    if (tab === 'board') renderBoard();
+    if (tab === 'print') renderPrint();
+    if (tab === 'settings') renderSettings();
+  }
+
+  function startEntry(id) {
+    if (state.current) { toast('Najpierw zakończ obecny występ', 'warn'); return; }
+    const i = state.queue.findIndex(q => q.id === id);
+    if (i < 0) return;
+    const [entry] = state.queue.splice(i, 1);
+    state.current = { ...entry, startedAt: Date.now() };
+    save();
+    renderAll();
+    toast('Start: ' + entry.team);
+  }
+
+  function moveEntry(id, dir) {
+    const i = state.queue.findIndex(q => q.id === id);
+    const j = i + dir;
+    if (i < 0 || j < 0 || j >= state.queue.length) return;
+    [state.queue[i], state.queue[j]] = [state.queue[j], state.queue[i]];
+    save();
+    renderQueue();
+    renderBoard();
+  }
+
+  function exportCSV() {
+    const rows = [['Data', 'Godzina', 'Drużyna', 'Skład', 'Piosenka', 'Artysta', 'Gra', 'Punkty', 'Gwiazdki']];
+    state.history.forEach(h => {
+      const s = songOf(h.songId);
+      rows.push([dateStr(h.at), timeStr(h.at), h.team, normalizeMembers(h.members).join(', '), s.title, s.artist, gameShort(s.game), h.score ?? '', h.stars || '']);
+    });
+    const csv = '\uFEFF' + rows.map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(';')).join('\r\n');
+    downloadFile(csv, 'just-dance-wyniki.csv', 'text/csv;charset=utf-8');
+  }
+
+  function exportJSON() {
+    downloadFile(JSON.stringify(state, null, 2), 'just-dance-kopia.json', 'application/json');
+  }
+
+  function downloadFile(content, name, type) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function importJSON(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const obj = JSON.parse(String(reader.result));
+        if (!obj || !Array.isArray(obj.queue) || !Array.isArray(obj.history)) throw new Error('zły format');
+        if (!confirm('Wczytać kopię? Obecna kolejka i rekordy zostaną zastąpione.')) return;
+        state = {
+          ...defaultState(),
+          ...obj,
+          hidden: Array.isArray(obj.hidden) ? obj.hidden.filter(id => SMAP[id]) : [],
+          queue: obj.queue.filter(q => q && SMAP[q.songId]).map(q => ({ ...q, members: normalizeMembers(q.members) })),
+          current: obj.current && SMAP[obj.current.songId] ? { ...obj.current, members: normalizeMembers(obj.current.members) } : null,
+          history: obj.history.filter(h => h && SMAP[h.songId]).map(h => ({ ...h, members: normalizeMembers(h.members) })),
+          todayGames: Array.isArray(obj.todayGames) ? obj.todayGames.filter(g => GMAP[g]) : defaultState().todayGames,
+          filterPlayers: ['all', '1', '2', '3', '4'].includes(String(obj.filterPlayers)) ? String(obj.filterPlayers) : 'all',
+          familyOnly: !!obj.familyOnly,
+          adultOverrides: obj.adultOverrides && typeof obj.adultOverrides === 'object' ? obj.adultOverrides : {},
+          theme: obj.theme === 'dark' ? 'dark' : 'light'
+        };
+        save();
+        applyTheme();
+        renderAll();
+        toast('Wczytano kopię');
+      } catch (e) {
+        toast('Nie udało się wczytać pliku', 'bad');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function deleteLast() {
+    if (!state.history.length) { toast('Brak wyników do cofnięcia', 'warn'); return; }
+    const last = state.history[state.history.length - 1];
+    const s = songOf(last.songId);
+    if (!confirm('Cofnąć ostatni wynik: ' + last.team + ' — ' + s.title + '?')) return;
+    state.history.pop();
+    save();
+    renderAll();
+    toast('Cofnięto ostatni wynik');
+  }
+
+  // ---------- render all ----------
+  function renderAll() {
+    renderHeader();
+    renderTabs();
+    if (ui.tab === 'menu') renderMenu();
+    if (ui.tab === 'queue') renderQueue();
+    if (ui.tab === 'records') renderRecords();
+    if (ui.tab === 'board') renderBoard();
+    if (ui.tab === 'print') renderPrint();
+    if (ui.tab === 'settings') renderSettings();
+    renderBoard();
+  }
+
+  // ---------- events ----------
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const a = el.dataset.action;
+
+    if (a === 'tab') { showTab(el.dataset.tab); return; }
+    if (a === 'menu-game') { ui.menuGame = el.dataset.game; renderMenu(); return; }
+    if (a === 'players') {
+      state.filterPlayers = el.dataset.players || 'all';
+      save(); renderMenu();
+      if (ui.tab === 'print') renderPrint();
+      return;
+    }
+    if (a === 'clear-filters') {
+      state.filterPlayers = 'all';
+      state.familyOnly = false;
+      ui.todayOnly = false;
+      ui.menuGame = 'ALL';
+      save(); renderMenu();
+      if (ui.tab === 'print') renderPrint();
+      return;
+    }
+    if (a === 'toggle-adult') {
+      const s = SMAP[el.dataset.song];
+      if (!s) return;
+      const cur = adultOf(s);
+      state.adultOverrides[s.id] = !cur;
+      save(); renderMenu(); renderSettings();
+      if (ui.tab === 'print') renderPrint();
+      toast(!cur ? 'Oznaczono jako wrażliwe' : 'Cofnięto oznaczenie');
+      return;
+    }
+    if (a === 'theme' || a === 'theme-toggle') {
+      if (a === 'theme-toggle') state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      else state.theme = el.dataset.theme === 'dark' ? 'dark' : 'light';
+      save(); applyTheme(); renderSettings();
+      return;
+    }
+    if (a === 'add-open') { openAdd(null); return; }
+    if (a === 'add-song') { openAdd(el.dataset.song); return; }
+    if (a === 'hide-song') {
+      const id = el.dataset.song;
+      if (!state.hidden.includes(id)) state.hidden.push(id);
+      save(); renderMenu(); renderSettings();
+      if (ui.tab === 'print') renderPrint();
+      toast('Ukryto — przywrócisz w Ustawieniach');
+      return;
+    }
+    if (a === 'unhide-song') {
+      state.hidden = state.hidden.filter(x => x !== el.dataset.song);
+      save(); renderMenu(); renderSettings();
+      if (ui.tab === 'print') renderPrint();
+      return;
+    }
+    if (a === 'restore-hidden') {
+      state.hidden = [];
+      save(); renderMenu(); renderSettings();
+      if (ui.tab === 'print') renderPrint();
+      toast('Przywrócono wszystkie piosenki');
+      return;
+    }
+    if (a === 'start') { startEntry(el.dataset.id); return; }
+    if (a === 'finish') { openScore(); return; }
+    if (a === 'cancel-current') {
+      if (!state.current) return;
+      if (confirm('Anulować występ bez wyniku?')) {
+        state.current = null;
+        save(); renderAll();
+      }
+      return;
+    }
+    if (a === 'q-up') { moveEntry(el.dataset.id, -1); return; }
+    if (a === 'q-down') { moveEntry(el.dataset.id, 1); return; }
+    if (a === 'q-del') {
+      const i = state.queue.findIndex(q => q.id === el.dataset.id);
+      if (i < 0) return;
+      if (!confirm('Usunąć „' + state.queue[i].team + '” z kolejki?')) return;
+      state.queue.splice(i, 1);
+      save(); renderAll();
+      return;
+    }
+    if (a === 'pick-song') {
+      const id = el.dataset.song;
+      if (!SMAP[id]) return;
+      if (ui.addSongIds.includes(id)) ui.addSongIds = ui.addSongIds.filter(x => x !== id);
+      else ui.addSongIds.push(id);
+      renderAddSelected();
+      renderAddResults($('#addSearch').value);
+      return;
+    }
+    if (a === 'clear-song') {
+      ui.addSongIds = ui.addSongIds.filter(x => x !== el.dataset.song);
+      renderAddSelected();
+      renderAddResults($('#addSearch').value);
+      return;
+    }
+    if (a === 'add-member') {
+      ui.addMembers.push('');
+      renderMembersEditor();
+      const inputs = $$('#addMembers input');
+      if (inputs.length) inputs[inputs.length - 1].focus();
+      return;
+    }
+    if (a === 'remove-member') {
+      const i = Number(el.dataset.index);
+      if (Number.isInteger(i)) {
+        ui.addMembers.splice(i, 1);
+        renderMembersEditor();
+      }
+      return;
+    }
+    if (a === 'add-cancel') { closeAdd(); return; }
+    if (a === 'star') {
+      ui.addStars = Number(el.dataset.stars);
+      renderStars();
+      return;
+    }
+    if (a === 'score-cancel') { closeScore(); return; }
+    if (a === 'score-skip') { saveScore(null); return; }
+    if (a === 'undo-last') { deleteLast(); return; }
+    if (a === 'export-csv') { exportCSV(); return; }
+    if (a === 'export-json') { exportJSON(); return; }
+    if (a === 'import-json') { $('#importFile').click(); return; }
+    if (a === 'reset-queue') {
+      if (!confirm('Wyczyścić kolejkę i bieżący występ? Rekordy zostaną.')) return;
+      state.queue = [];
+      state.current = null;
+      save(); renderAll();
+      toast('Wyczyszczono kolejkę');
+      return;
+    }
+    if (a === 'reset-all') {
+      if (!confirm('Wyczyścić wszystko: kolejkę, występy i rekordy?')) return;
+      if (!confirm('Na pewno? Tej operacji nie da się cofnąć.')) return;
+      state = defaultState();
+      ui.todayOnly = false;
+      ui.menuGame = 'ALL';
+      ui.menuQuery = '';
+      ui.printMode = 'menu-version';
+      applyTheme();
+      save(); renderAll();
+      toast('Wyczyszczono wszystko');
+      return;
+    }
+    if (a === 'toggle-game') {
+      const g = el.dataset.game;
+      if (state.todayGames.includes(g)) state.todayGames = state.todayGames.filter(x => x !== g);
+      else state.todayGames.push(g);
+      state.todayGames = GAME_ORDER.filter(x => state.todayGames.includes(x));
+      save(); renderHeader(); renderSettings(); renderMenu();
+      if (ui.tab === 'print') renderPrint();
+      return;
+    }
+    if (a === 'print-mode') {
+      ui.printMode = el.dataset.mode || 'menu-version';
+      renderPrint();
+      return;
+    }
+    if (a === 'do-print') {
+      renderPrint();
+      window.print();
+      return;
+    }
+    if (a === 'fullscreen') {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen?.();
+      return;
+    }
+  });
+
+  document.addEventListener('submit', (e) => {
+    if (e.target.id === 'addForm') {
+      e.preventDefault();
+      const team = $('#addTeam').value.trim();
+      const members = ui.addMembers.map(s => s.trim()).filter(Boolean);
+      if (!team) { toast('Wpisz nazwę drużyny', 'warn'); $('#addTeam').focus(); return; }
+      const ids = ui.addSongIds.filter(id => SMAP[id]);
+      if (!ids.length) { toast('Wybierz co najmniej jedną piosenkę', 'warn'); $('#addSearch').focus(); return; }
+
+      const songs = ids.map(id => SMAP[id]);
+      songs.forEach(s => state.queue.push({ id: uid(), team, members: members.slice(), songId: s.id }));
+      const outside = songs.filter(s => !state.todayGames.includes(s.game)).length;
+
+      save();
+      closeAdd();
+      renderAll();
+
+      const n = songs.length;
+      const word = n === 1 ? 'piosenkę' : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 'piosenki' : 'piosenek');
+      toast('Dodano ' + n + ' ' + word + ': ' + team + (outside ? ' — ' + outside + ' spoza listy na dziś' : ''), outside ? 'warn' : '');
+      return;
+    }
+    if (e.target.id === 'scoreForm') {
+      e.preventDefault();
+      const raw = $('#scoreInput').value.trim();
+      saveScore(raw === '' ? null : Number(raw));
+      return;
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    if (e.target.id === 'menuSearch') {
+      ui.menuQuery = e.target.value;
+      renderSongList();
+      return;
+    }
+    if (e.target.id === 'addSearch') {
+      renderAddResults(e.target.value);
+      return;
+    }
+    if (e.target.dataset.memberIndex !== undefined) {
+      ui.addMembers[Number(e.target.dataset.memberIndex)] = e.target.value;
+      return;
+    }
+    if (e.target.id === 'setEvent') {
+      state.event = e.target.value;
+      save();
+      renderHeader();
+      renderBoard();
+      return;
+    }
+  });
+
+  document.addEventListener('change', (e) => {
+    if (e.target.id === 'todayOnly') {
+      ui.todayOnly = e.target.checked;
+      renderMenu();
+      return;
+    }
+    if (e.target.id === 'familyOnly' || e.target.id === 'printFamilyOnly') {
+      state.familyOnly = e.target.checked;
+      save(); renderMenu();
+      if (ui.tab === 'print') renderPrint();
+      return;
+    }
+    if (e.target.id === 'setSlot') {
+      const v = Math.min(15, Math.max(1, Number(e.target.value) || 5));
+      state.slot = v;
+      save();
+      renderAll();
+      return;
+    }
+    if (e.target.id === 'importFile') {
+      const f = e.target.files && e.target.files[0];
+      if (f) importJSON(f);
+      e.target.value = '';
+      return;
+    }
+  });
+
+  // enter in add search picks the only/first result
+  $('#addSearch').addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const first = $('#addResults .result');
+    if (first) first.click();
+  });
+
+  // ---------- timer ----------
+  function tick() {
+    const clock = $('#boardClock');
+    if (clock) clock.textContent = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    if (!state.current) return;
+    const elapsed = Math.floor((Date.now() - (state.current.startedAt || Date.now())) / 1000);
+    const slot = Math.max(1, Number(state.slot) || 5) * 60;
+    const t = $('#timerText');
+    if (t) t.textContent = fmt(elapsed);
+    const bar = $('#timerBar');
+    if (bar) bar.style.width = Math.min(100, elapsed / slot * 100) + '%';
+    const hint = $('#timerHint');
+    if (hint) {
+      if (elapsed > slot) hint.textContent = '+' + fmt(elapsed - slot) + ' po czasie';
+      else hint.textContent = 'pozostało ' + fmt(slot - elapsed);
+    }
+    const bt = $('#boardTimer');
+    if (bt) bt.textContent = fmt(elapsed);
+    const nowEl = $('.now');
+    if (nowEl) nowEl.classList.toggle('over', elapsed > slot);
+  }
+
+  // ---------- init ----------
+  applyTheme();
+  document.body.dataset.tab = 'menu';
+  showTab('menu');
+  renderAll();
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>
